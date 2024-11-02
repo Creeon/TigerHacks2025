@@ -191,14 +191,15 @@ for i in range(48):
     tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
     x+=50
     for i in range(48):
-        if random.randint(0,1) == 1:
+        """if random.randint(0,1) == 1:
             tiles.add(Tile(width=50, height=50, x=x, y=y, image="images/grass.png", collision=False))
             layers[1].add(WheatTile(x,y))
         else:
             tiles.add(Tile(width=50, height=50, x=x, y=y, image="images/grass.png", collision=False))
-            layers[1].add(PumpkinTile(x,y))
+            layers[1].add(PumpkinTile(x,y))"""
+        tiles.add(GroundTile(x,y))
         x+=50
-    tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
+    tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.rangitdint(0,255),random.randint(0,255),random.randint(0,255))))
     y+=50
     x=25
 for i in range(50):
@@ -271,9 +272,12 @@ while not quit:
             if (not type(tile) == Player) and tile.collision:
                 player_speed = checkCollision(player.rect, tile.rect, player_speed)
             if not tool.hidden:
-                if isinstance(tile, CropTile):
+                """if isinstance(tile, CropTile):
                     if tile.rect.colliderect(tool.rect):
-                        tile.interact(inventory)
+                        tile.interact(inventory)"""
+                if isinstance(tile, GroundTile):
+                    if tile.rect.colliderect(tool.rect):
+                        tile.tilled=True
     i = 0
     for layer in layers:
         if not i == 3:
