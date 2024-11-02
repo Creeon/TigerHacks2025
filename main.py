@@ -148,7 +148,7 @@ while not quit:
         elif event.type == pygame.KEYDOWN:
             keys_pressed.append(event.key)
             match event.key:
-                case pygame.K_l:
+                case pygame.K_l | pygame.K_e:
                     for layer in layers:
                         for s in layer:
                             if type(s) == WheatTile:
