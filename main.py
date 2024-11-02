@@ -93,29 +93,30 @@ class Player(pygame.sprite.Sprite):
         
         
         
-        self.animation_change = 30
+        self.animation_change = 20
         self.walking_1 = dict({
-            "0" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
-            "90" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
-            "180" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
-            "270" : pygame.transform.scale(pygame.image.load("images/For_Walk1.png").convert_alpha(), (100,100))
+            "0" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/right_walk.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_back.png").convert_alpha(), (100,100)),
+            "180" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/left_walk.png").convert_alpha(), (100,100)),
+            "270" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/for_walk1.png").convert_alpha(), (100,100))
         })
         self.walking_2 = dict({
-            "0" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
-            "90" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
-            "180" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
-            "270" : pygame.transform.scale(pygame.image.load("images/For_Walk2.png").convert_alpha(), (100,100))
+            "0" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_right.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_back.png").convert_alpha(), (100,100)),
+            "180" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_left.png").convert_alpha(), (100,100)),
+            "270" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/for_walk2.png").convert_alpha(), (100,100))
         })
         self.idle = dict({
-            "0" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
-            "90" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
-            "180" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
-            "270" : pygame.transform.scale(pygame.image.load("images/Idle.png").convert_alpha(), (100,100))
+            "0" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_right.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_back.png").convert_alpha(), (100,100)),
+            "180" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_left.png").convert_alpha(), (100,100)),
+            "270" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/Idle.png").convert_alpha(), (100,100))
         })
         
         self.image = self.idle["270"]
         self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))
         self.orientation = 270
+        self.last_orientation = 270
         
         self.frame_counter=0
         
@@ -134,17 +135,19 @@ class Player(pygame.sprite.Sprite):
             self.walking_type=0
             self.image = self.idle[str(self.orientation)]
         else:
-            if self.frame_counter%self.animation_change==0:
+            if self.frame_counter%self.animation_change==0 or not self.last_orientation == self.orientation:
+                self.frame_counter=0
                 self.walking_type+=1
                 if self.walking_type >= 2:
                     self.walking_type = 0
                 match self.walking_type:
                     case 0:
-                        self.image = self.walking_1[str(self.orientation)]
-                    case 1:
                         self.image = self.walking_2[str(self.orientation)]
+                    case 1:
+                        self.image = self.walking_1[str(self.orientation)]
             self.frame_counter+=1
         print(self.orientation)
+        self.last_orientation = self.orientation
         
 def getSpeed(keys, speed):
     target_speed = [0,0,0,0] #+x -x +y -y
