@@ -55,5 +55,8 @@ class WheatTile(CropTile):
         x = 0,
         y = 0,
     ):
-        super().__init__("Wheat", 10, 10, width=50, height=50, x=x, y=y, collision=False, image="images/better_wheat.png", interact_range=100)
+        super().__init__("Wheat", 10, 10, width=50, height=50, x=x, y=y, collision=False, image="images/best_wheat.png", interact_range=100)
+    
+    def interact(self):
+        self.image = pygame.transform.scale(self.image, (1000,1000))
         

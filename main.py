@@ -2,6 +2,8 @@ import pygame
 import math
 import time
 import random
+#from tiles import Tile, InteractableTile, CropTile, WheatTile
+from tiles import *
 
 pygame.init()
 print(pygame.display.Info())
@@ -26,39 +28,6 @@ def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect,
     moving_rect.y -= movement[1]
     
     return new_movement
-        
-
-class Tile(pygame.sprite.Sprite):
-    def __init__(self, width=50, height=50, x=screen_width//2, y=screen_height//2, color=(255,255,255), collision = True, image=None):
-        super().__init__()
-        if image == None:
-            self.image = pygame.Surface((width, height))
-            self.image.fill(color)
-        else:
-            self.image = pygame.image.load(image).convert_alpha()
-            self.image = pygame.transform.scale(self.image, (width,height))
-        self.rect = self.image.get_rect(center=(x,y))
-        self.collision = collision
-        
-    def update(self, movement):
-        self.rect = self.rect.move(movement[0], movement[1])
-        
-class InteractableTile(Tile):
-    def __init__(
-        self,
-        width = 50,
-        height = 50,
-        x = screen_width//2,
-        y = screen_height//2,
-        color = (255,255,255),
-        collision = True,
-        image = None,
-        interact_range = 50,
-        interact_function = None
-    ):
-        super().__init__(width=width, height=height, x=x, y=y, color=color, collision=collision, image=image)
-        self.interact_range = interact_range
-        self.interact_function = interact_function
         
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -162,8 +131,9 @@ for i in range(50):
     x+=50
 layers = [tiles, pygame.sprite.Group(), pygame.sprite.Group(), pygame.sprite.Group()]
 layers[3].add(player)
-layers[2].add(InteractableTile(x=150, y=150, image="images/better_wheat.png", interact_function=(lambda:print("hi"))))
-layers[2].add(InteractableTile(x=450, y=150, image="images/better_wheat.png", interact_function=(lambda:print("bye"))))
+layers[2].add(InteractableTile(x=150, y=150, image="images/better_wheat.png"))
+layers[2].add(InteractableTile(x=450, y=150, image="images/better_wheat.png"))
+layers[2].add(WheatTile(100,500))
 
 
 
@@ -181,9 +151,9 @@ while not quit:
                 case pygame.K_l:
                     for layer in layers:
                         for s in layer:
-                            if type(s) == InteractableTile:
+                            if type(s) == WheatTile:
                                 if pygame.Vector2(s.rect.center).distance_to(pygame.Vector2(player.rect.center)) <= s.interact_range:
-                                    s.interact_function()
+                                    s.interact()
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
         
