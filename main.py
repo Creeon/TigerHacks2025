@@ -5,6 +5,7 @@ import random
 #from tiles import Tile, InteractableTile, CropTile, WheatTile
 from tiles import *
 from tools import *
+from misc import *
 
 pygame.init()
 print(pygame.display.Info())
@@ -180,6 +181,7 @@ for i in range(100):
     inventory.add_item("grass")
     
 tool = Tool("test", "images/temp_tool.png", 35, 650, player)
+menu = Menu(background_image="images/angry.jpg")
 
 while not quit:
     # Process player inputs.
@@ -199,6 +201,8 @@ while not quit:
                 tool.hidden=False
             elif(event.key == pygame.K_i):
                 inventory.hidden = not inventory.hidden
+            elif(event.key == pygame.K_p):
+                menu.hidden = not menu.hidden
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
             if event.key == pygame.K_k:
@@ -236,6 +240,8 @@ while not quit:
     tool.update()
     if not tool.hidden:
         screen.blit(tool.image, tool.rect)
+    if not menu.hidden:
+        screen.blit(menu.image, menu.rect)
 
     pygame.display.flip()  # Refresh on-screen display
     delays.append(time.time() - last)
