@@ -28,7 +28,8 @@ class InteractableTile(Tile):
         interact_range = 50
     ):
         super().__init__(width=width, height=height, x=x, y=y, color=color, collision=collision, image=image)
-        self.interact_range = interact_range        
+        self.interact_range = interact_range   
+             
 class CropTile(InteractableTile):
     def __init__(
         self,
@@ -49,9 +50,8 @@ class CropTile(InteractableTile):
         self.grow_time = grow_time
         self.harvest_time = harvest_time
 
-    def interact(self, inv):
-        inv.add_item(self.crop_name)
-        self.kill()
+    def interact(self):
+        self.image = pygame.transform.scale(self.image, (1000,1000))
         
 class WheatTile(CropTile):
     def __init__(
@@ -60,4 +60,7 @@ class WheatTile(CropTile):
         y = 0,
     ):
         super().__init__("Wheat", 10, 10, width=50, height=50, x=x, y=y, collision=False, image="images/best_wheat.png", interact_range=100)
+    
+    def interact(self):
+        self.image = pygame.transform.scale(self.image, (10,10))
         
