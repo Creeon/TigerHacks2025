@@ -4,6 +4,7 @@ import time
 import random
 #from tiles import Tile, InteractableTile, CropTile, WheatTile
 from tiles import *
+from tools import *
 
 pygame.init()
 print(pygame.display.Info())
@@ -152,6 +153,9 @@ delays = []
 inventory = Inventory()
 for i in range(100):
     inventory.add_item("grass")
+    
+tool = Tool("test", "images/temp_tool.png", 35, 65, player)
+tool.hidden=False
 
 while not quit:
     # Process player inputs.
@@ -167,8 +171,12 @@ while not quit:
                         if isinstance(s, Gate):
                             if pygame.Vector2(s.rect.center).distance_to(pygame.Vector2(player.rect.center)) <= s.interact_range:
                                 s.interact()
+            elif(event.key == pygame.K_k):
+                tool.hidden=False
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
+            if event.key == pygame.K_k:
+                tool.hidden=True
         
     if pygame.K_e in keys_pressed or pygame.K_l in keys_pressed:
         for layer in layers:
@@ -202,6 +210,9 @@ while not quit:
         layer.draw(screen)
         
     inventory.draw(screen)
+    tool.update()
+    if not tool.hidden:
+        screen.blit(tool.image, tool.rect)
 
     pygame.display.flip()  # Refresh on-screen display
     delays.append(time.time() - last)
