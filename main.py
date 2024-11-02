@@ -71,9 +71,17 @@ class Player(pygame.sprite.Sprite):
         self.image.fill((0, 0, 0))
 
         self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))
+        self.orientation = 270
         
     def update(self, movement):
-        self.rect = self.rect.move(movement[0], movement[1])
+        #self.rect = self.rect.move(movement[0], movement[1])
+        if movement[0] == 0:
+            if not movement[1] == 0:
+                self.orientation = 270 if movement[1] > 0 else 90
+        else:
+            if not movement[0] == 0:
+                self.orientation = 0 if movement[0] > 0 else 180
+        print(self.orientation)
         
 def getSpeed(keys, speed):
     target_speed = [0,0,0,0] #+x -x +y -y
@@ -182,6 +190,8 @@ while not quit:
         if not i == 3:
             layer.update([-player_speed[0], -player_speed[1]])
         i+=1
+        
+    player.update(player_speed)
     
     #print(player_speed)
 
