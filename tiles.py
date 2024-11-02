@@ -53,8 +53,9 @@ class CropTile(InteractableTile):
         self.grow_time = grow_time
         self.harvest_time = harvest_time
 
-    def interact(self):
-        self.image = pygame.transform.scale(self.image, (1000,1000))
+    def interact(self, inv):
+        inv.add_item(self.crop_name)
+        self.kill()
         
 class WheatTile(CropTile):
     def __init__(
