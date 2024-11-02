@@ -122,6 +122,10 @@ class Player(pygame.sprite.Sprite):
         
         self.walking_type = 0
         
+        self.current_tool = None
+        
+        self.tools = []
+        
     def update(self, movement):
         #self.rect = self.rect.move(movement[0], movement[1])
         if movement[0] == 0:
@@ -200,7 +204,8 @@ inventory = Inventory()
 for i in range(100):
     inventory.add_item("grass")
     
-tool = Tool("test", "images/tractor.png", 500, 500, player)
+player.tools.append(Tractor(player))
+player.tools.append(WateringCan(player))
 menu = Menu(background_image="images/angry.jpg")
 day_font = pygame.font.Font(None, 48)
 day_writing = day_font.render("Day " + str(day), True, (0,0,0))
@@ -228,21 +233,35 @@ while not quit:
                         if isinstance(tile, Gate):
                             if checkRange(player.rect, tile.rect, tile.interact_range):
                                 s.interact()"""
-            if(event.key == pygame.K_k):
-                tool.hidden=False
-            elif(event.key == pygame.K_i):
-                inventory.hidden = not inventory.hidden
-            elif(event.key == pygame.K_p):
-                menu.hidden = not menu.hidden
-            elif(event.key == pygame.K_r):
-                day+=1
-                day_writing = day_font.render("Day " + str(day), True, (0,0,0))
-                day_rect = day_writing.get_rect(center=(screen_width-100, 50))
-                day_change()
+            match event.key:
+                case pygame.K_k:
+                    if not player.current_tool==None:
+                        player.current_tool.hidden=False
+                case pygame.K_i:
+                    inventory.hidden = not inventory.hidden
+                case pygame.K_p:
+                    menu.hidden = not menu.hidden
+                case pygame.K_r:
+                    day+=1
+                    day_writing = day_font.render("Day " + str(day), True, (0,0,0))
+                    day_rect = day_writing.get_rect(center=(screen_width-100, 50))
+                    day_change()
+                case pygame.K_1:
+                    if len(player.tools) >= 1:
+                        player.current_tool = player.tools[0]
+                case pygame.K_2:
+                    if len(player.tools) >= 2:
+                        player.current_tool = player.tools[1]
+                case pygame.K_3:
+                    if len(player.tools) >= 3:
+                        player.current_tool = player.tools[2]
+                    
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
-            if event.key == pygame.K_k:
-                tool.hidden=True
+            match event.key:
+                case pygame.K_k:
+                    if not player.current_tool == None:
+                        player.current_tool.hidden=True
 
     screen.fill((6,64,43))  # Fill the display with a solid color
     
@@ -252,13 +271,18 @@ while not quit:
         for tile in row:
             if (not tile == None) and tile.collision:
                 player_speed = checkCollision(player.rect, tile.rect, player_speed)
-            if not tool.hidden:
+            if (not player.current_tool == None) and not player.current_tool.hidden:
                 """if isinstance(tile, CropTile):
                     if tile.rect.colliderect(tool.rect):
                         tile.interact(inventory)"""
                 if isinstance(tile, GroundTile):
-                    if tile.rect.colliderect(tool.rect):
-                        tile.tilled=True
+                    if tile.rect.colliderect(player.current_tool.rect):
+                        if player.current_tool.type == "tilling":
+                            if not tile.tilled:
+                                tile.tilled=True
+                        elif player.current_tool.type == "watering":
+                            if tile.tilled and not tile.watered:
+                                tile.watered=True
     for row in map:
         for tile in row:
             if not tile == None:
@@ -280,10 +304,11 @@ while not quit:
         
     screen.blit(player.image, player.rect)
     
-    tool.update()
+    if not player.current_tool == None:
+        player.current_tool.update()
     
-    if not tool.hidden:
-        screen.blit(tool.image, tool.rect)
+    if (not player.current_tool == None) and not player.current_tool.hidden:
+        screen.blit(player.current_tool.image, player.current_tool.rect)
         
     screen.blit(day_writing, day_rect)
         

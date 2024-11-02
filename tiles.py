@@ -145,11 +145,14 @@ class GroundTile(Tile):
         super().__init__(width=50,height=50,x=x,y=y,collision=collision,image=self.default_image,image_loaded=True)
         self.crop = None
         self.soil_quality=5
-        self.fertilizer = False
+        self.fertilized = False
         self.watered = False
         self.tilled = False
+        self.shader = pygame.Surface((50,50))
+        self.shader.fill((255,87,51))
+        self.shader.set_alpha(0)
     def getRisk(self):
-        return 30 - self.soil_quality - (5 if self.fertilizer else 0) - (0 if self.watered else 15)
+        return 30 - self.soil_quality - (5 if self.fertilized else 0) - (0 if self.watered else 15)
     def update(self, movement):
         if not self.tilled:
             self.image = self.default_image
@@ -164,10 +167,15 @@ class GroundTile(Tile):
         if self.crop == None and self.tilled:
             if random.randint(1,10) < 3:
                 self.tilled=False
+    def fertilize(self):
+        self.fertilized = True
+        self.shader.set_alpha(45)
     def display(self, screen):
         screen.blit(self.image, self.rect)
         if not self.crop == None:
             screen.blit(self.crop.image, self.crop.rect)
+        if self.fertilized:
+            screen.blit(self.shader, self.shader.get_rect())
         
         
         
