@@ -134,7 +134,7 @@ class Player(pygame.sprite.Sprite):
             self.walking_type=0
             self.image = self.idle[str(self.orientation)]
         else:
-            if self.frame_counter%30==0:
+            if self.frame_counter%self.animation_change==0:
                 self.walking_type+=1
                 if self.walking_type >= 2:
                     self.walking_type = 0
