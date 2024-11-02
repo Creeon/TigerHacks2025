@@ -62,6 +62,7 @@ class Inventory():
                 "visual_count" : self.font.render(str(1), True, (255,255,255))
             })
             self.image=pygame.Surface((self.image.get_width() + 50, self.image.get_height()))
+            self.image.fill((255,255,255))
             self.rect = self.image.get_rect(center=(self.image.get_width()//2+5, 30))
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -180,7 +181,7 @@ inventory = Inventory()
 for i in range(100):
     inventory.add_item("grass")
     
-tool = Tool("test", "images/temp_tool.png", 35, 650, player)
+tool = Tool("test", "images/tractor.png", 500, 500, player)
 menu = Menu(background_image="images/angry.jpg")
 
 while not quit:
@@ -208,7 +209,7 @@ while not quit:
             if event.key == pygame.K_k:
                 tool.hidden=True
 
-    screen.fill((50,0,0))  # Fill the display with a solid color
+    screen.fill((6,64,43))  # Fill the display with a solid color
     
     player_speed = getSpeed(keys_pressed, 10)
     
