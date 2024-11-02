@@ -16,7 +16,8 @@ keys_pressed = []
 
 item_images = dict({
     "Wheat" : "images/best_wheat.png",
-    "grass" : "images/grass.png"
+    "grass" : "images/grass.png",
+    "Pumpkin" : "images/pumpkin.png"
 })
 
 def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect, movement):
@@ -74,45 +75,6 @@ class Player(pygame.sprite.Sprite):
     def update(self, movement):
         self.rect = self.rect.move(movement[0], movement[1])
         
-        
-    def checkXCollision(self, x, movex):
-        if movex > 0:
-            right = self.rect.right
-            if right > x:
-                return movex
-            if right+movex > x:
-                return x-right
-            else:
-                return movex
-        elif movex < 0:
-            left = self.rect.left
-            if left < x:
-                return movex
-            if left+movex < x:
-                return x-left
-            else:
-                return movex
-        return 0
-    
-    def checkYCollision(self, y, movey):
-        if movey < 0:
-            top = self.rect.top
-            if top < y:
-                return movey
-            if top+movey < y:
-                return y-top
-            else:
-                return movey
-        elif movey > 0:
-            bottom = self.rect.bottom
-            if bottom > y:
-                return movey
-            if bottom+movey > y:
-                return y-bottom
-            else:
-                return movey
-        return 0
-        
 def getSpeed(keys, speed):
     target_speed = [0,0,0,0] #+x -x +y -y
     for key in keys:
@@ -155,8 +117,12 @@ for i in range(48):
     tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
     x+=50
     for i in range(48):
-        tiles.add(Tile(width=50, height=50, x=x, y=y, image="images/grass.png", collision=False))
-        layers[1].add(WheatTile(x,y))
+        if random.randint(0,1) == 1:
+            tiles.add(Tile(width=50, height=50, x=x, y=y, image="images/grass.png", collision=False))
+            layers[1].add(WheatTile(x,y))
+        else:
+            tiles.add(Tile(width=50, height=50, x=x, y=y, image="images/grass.png", collision=False))
+            layers[1].add(PumpkinTile(x,y))
         x+=50
     tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
     y+=50
@@ -165,6 +131,7 @@ for i in range(50):
     tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
     x+=50
 layers[3].add(player)
+layers[2].add(GateH(400,400))
 #layers[2].add(InteractableTile(x=150, y=150, image="images/better_wheat.png"))
 #layers[2].add(InteractableTile(x=450, y=150, image="images/better_wheat.png"))
 #layers[2].add(WheatTile(100,500))
@@ -186,6 +153,12 @@ while not quit:
             raise SystemExit
         elif event.type == pygame.KEYDOWN:
             keys_pressed.append(event.key)
+            if(event.key == pygame.K_e):
+                for layer in layers:
+                    for s in layer:
+                        if isinstance(s, GateH):
+                            if pygame.Vector2(s.rect.center).distance_to(pygame.Vector2(player.rect.center)) <= s.interact_range:
+                                s.interact()
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
         
@@ -200,9 +173,10 @@ while not quit:
     
     player_speed = getSpeed(keys_pressed, 10)
     
-    for tile in tiles:
-        if tile.collision:
-            player_speed = checkCollision(player.rect, tile.rect, player_speed)
+    for layer in layers:
+        for tile in layer:
+            if (not type(tile) == Player) and tile.collision:
+                player_speed = checkCollision(player.rect, tile.rect, player_speed)
     i = 0
     for layer in layers:
         if not i == 3:
