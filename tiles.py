@@ -186,7 +186,3 @@ class GroundTile(Tile):
 class House(InteractableTile):
     def __init__(self,x,y):
         super().__init__(500,500,x,y,image="images/house.png")
-        
-        
-        
-        
