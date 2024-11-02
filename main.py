@@ -176,42 +176,22 @@ player = Player()
 #tile2 = Tile(width=100, height=100, x = 220, y=200, color=(0,255,0))
 keys_pressed = []
 
-tiles = pygame.sprite.Group()
-layers = [tiles, pygame.sprite.Group(), pygame.sprite.Group(), pygame.sprite.Group()]
-
-x=25
-y=25
-for i in range(50):
-    tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
-    x+=50
-x=25
-y+=50
-for i in range(48):
-    tiles
-    tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
-    x+=50
-    for i in range(48):
-        """if random.randint(0,1) == 1:
-            tiles.add(Tile(width=50, height=50, x=x, y=y, image="images/grass.png", collision=False))
-            layers[1].add(WheatTile(x,y))
-        else:
-            tiles.add(Tile(width=50, height=50, x=x, y=y, image="images/grass.png", collision=False))
-            layers[1].add(PumpkinTile(x,y))"""
-        tiles.add(GroundTile(x,y))
+map = [[None for i in range(200)] for i in range(200)]
+y=0
+for i in range(0,200):
+    x=0
+    if i == 0 or i == 199:
+        for i2 in range(200):
+            map[i][i2] = Tile(x=x,y=y,image=images["stone"],image_loaded=True)
+            x+=50
+    else:
+        map[i][0] = Tile(x=x,y=y,image=images["stone"],image_loaded=True)
         x+=50
-    tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.rangitdint(0,255),random.randint(0,255),random.randint(0,255))))
+        for i2 in range(2,199):
+            map[i][i2] = GroundTile(x,y)
+            x+=50
+        map[i][199] = Tile(x=x,y=y,image=images["stone"],image_loaded=True)
     y+=50
-    x=25
-for i in range(50):
-    tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
-    x+=50
-layers[3].add(player)
-layers[2].add(Gate(400,400, 90))
-#layers[2].add(InteractableTile(x=150, y=150, image="images/better_wheat.png"))
-#layers[2].add(InteractableTile(x=450, y=150, image="images/better_wheat.png"))
-#layers[2].add(WheatTile(100,500))
-
-
 
 last = time.time()
 delays = []
@@ -227,11 +207,12 @@ day_writing = day_font.render("Day " + str(day), True, (0,0,0))
 day_rect = day_writing.get_rect(center=(screen_width-100, 50))
 
 def day_change():
-    global player, layers, day
-    for layer in layers:
-        for tile in layer:
-            if isinstance(tile, CropTile):
-                tile.iterate()
+    global player, map, day
+    for row in map:
+        for tile in row:
+            if isinstance(tile, GroundTile):
+                if not tile.crop == None:
+                    tile.crop.iterate()
 
 while not quit:
     # Process player inputs.
@@ -241,13 +222,13 @@ while not quit:
             raise SystemExit
         elif event.type == pygame.KEYDOWN:
             keys_pressed.append(event.key)
-            if(event.key == pygame.K_e):
-                for layer in layers:
-                    for s in layer:
-                        if isinstance(s, Gate):
-                            if checkRange(player.rect, s.rect, s.interact_range):
-                                s.interact()
-            elif(event.key == pygame.K_k):
+            """if(event.key == pygame.K_e):
+                for row in map:
+                    for tile in row:
+                        if isinstance(tile, Gate):
+                            if checkRange(player.rect, tile.rect, tile.interact_range):
+                                s.interact()"""
+            if(event.key == pygame.K_k):
                 tool.hidden=False
             elif(event.key == pygame.K_i):
                 inventory.hidden = not inventory.hidden
@@ -267,9 +248,9 @@ while not quit:
     
     player_speed = getSpeed(keys_pressed, 10)
     
-    for layer in layers:
-        for tile in layer:
-            if (not type(tile) == Player) and tile.collision:
+    for row in map:
+        for tile in row:
+            if (not tile == None) and tile.collision:
                 player_speed = checkCollision(player.rect, tile.rect, player_speed)
             if not tool.hidden:
                 """if isinstance(tile, CropTile):
@@ -278,11 +259,10 @@ while not quit:
                 if isinstance(tile, GroundTile):
                     if tile.rect.colliderect(tool.rect):
                         tile.tilled=True
-    i = 0
-    for layer in layers:
-        if not i == 3:
-            layer.update([-player_speed[0], -player_speed[1]])
-        i+=1
+    for row in map:
+        for tile in row:
+            if not tile == None:
+                tile.update([-player_speed[0], -player_speed[1]])
         
     player.update(player_speed)
     
@@ -291,11 +271,17 @@ while not quit:
     #tiles.draw(screen)
     #screen.blit(player.image,player.rect)
     
-    for layer in layers:
-        layer.draw(screen)
+    for row in map:
+        for tile in row:
+            if not tile == None:
+                tile.display(screen)
     if not inventory.hidden:
         inventory.draw(screen)
+        
+    screen.blit(player.image, player.rect)
+    
     tool.update()
+    
     if not tool.hidden:
         screen.blit(tool.image, tool.rect)
         

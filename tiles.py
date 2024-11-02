@@ -10,7 +10,8 @@ images = dict({
     "dead_wheat" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (50,50)),
     "grass" : pygame.transform.scale(pygame.image.load("images/grass.png").convert_alpha(), (50,50)),
     "dirt" : pygame.transform.scale(pygame.image.load("images/dirt.png").convert_alpha(), (50,50)),
-    "wet_dirt" : pygame.transform.scale(pygame.image.load("images/wet_dirt.png").convert_alpha(), (50,50))
+    "wet_dirt" : pygame.transform.scale(pygame.image.load("images/wet_dirt.png").convert_alpha(), (50,50)),
+    "stone" : pygame.transform.scale(pygame.image.load("images/stone.png").convert_alpha(), (50,50)),
 })
 
 class Tile(pygame.sprite.Sprite):
@@ -34,6 +35,9 @@ class Tile(pygame.sprite.Sprite):
     def change_image(self, image, width, height):
         self.image = pygame.image.load(image).convert_alpha()
         self.image = pygame.transform.scale(self.image, (width,height))
+        
+    def display(self, screen):
+        screen.blit(self.image, self.rect)
         
 class InteractableTile(Tile):
     def __init__(
