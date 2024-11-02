@@ -7,24 +7,21 @@ from tiles import *
 from tools import *
 from misc import *
 
-#********INITIALIZE SCREEN/BOARD********
 pygame.init()
 print(pygame.display.Info())
-screen_width, screen_height = 1200, 700 #Initialize screen dimensions
-screen = pygame.display.set_mode((screen_width,screen_height)) #Initialize screen to size
-clock = pygame.time.Clock() #For use with screen updating and timed events
-quit = False #Game loop quit boolean
-max_frames = 60 #Frame rate
-keys_pressed = [] #Stores key currently being pressed (for harvest time tracking)
+screen_width, screen_height = 1200, 700
+screen = pygame.display.set_mode((screen_width,screen_height))
+clock = pygame.time.Clock()
+quit = False
+max_frames = 60
+keys_pressed = []
 
-#Dictionary of item images
 item_images = dict({
     "Wheat" : "images/best_wheat.png",
     "grass" : "images/grass.png",
     "Pumpkin" : "images/pumpkin.png"
 })
 
-#Function to check if player and screen-edge tile are touching
 def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect, movement):
     if moving_rect.colliderect(static_rect):
         return movement
@@ -46,15 +43,14 @@ def checkRange(rect_1: pygame.rect.Rect, rect_2:pygame.rect.Rect, distance):
     rect_1.inflate_ip(-distance*2,-distance*2)
     return would_collide
 
-#********INVENTORY CLASS********
 class Inventory():
-    #initializiation
     def __init__(self):
         self.items=dict()
         self.image=pygame.Surface((50,90))
         self.image.fill((125,125,125))
         self.rect = self.image.get_rect(center=(30,55))
         self.font = pygame.font.Font(None, 24)
+        self.hidden = False
     def add_item(self,item):
         if item in self.items.keys():
             self.items[item]["count"]+=1
