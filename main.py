@@ -5,19 +5,22 @@ import random
 #from tiles import Tile, InteractableTile, CropTile, WheatTile
 from tiles import *
 
+#********INITIALIZE SCREEN/BOARD********
 pygame.init()
 print(pygame.display.Info())
-screen_width, screen_height = 1200, 700
-screen = pygame.display.set_mode((screen_width,screen_height))
-clock = pygame.time.Clock()
-quit = False
-max_frames = 60
-keys_pressed = []
+screen_width, screen_height = 1200, 700 #Initialize screen dimensions
+screen = pygame.display.set_mode((screen_width,screen_height)) #Initialize screen to size
+clock = pygame.time.Clock() #For use with screen updating and timed events
+quit = False #Game loop quit boolean
+max_frames = 60 #Frame rate
+keys_pressed = [] #Stores key currently being pressed (for harvest time tracking)
 
+#Dictionary of item images
 item_images = dict({
     "wheat" : "images/best_wheat.png"
 })
 
+#Function to check if player and screen-edge tile are touching
 def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect, movement):
     if moving_rect.colliderect(static_rect):
         return movement
@@ -33,12 +36,15 @@ def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect,
     
     return new_movement
 
+#********INVENTORY CLASS********
 class Inventory():
+    #initializiation
     def __init__(self):
         self.items=dict()
         self.image=pygame.Surface((50,40))
         self.image.fill((125,125,125))
         self.rect = self.image.get_rect(center=(30,25))
+    #Function to add item to inventory
     def add_item(self,item):
         if item in self.items.keys():
             self.items[item]["count"]+=1
