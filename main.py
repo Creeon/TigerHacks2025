@@ -60,15 +60,15 @@ class Inventory():
         self.rect = self.image.get_rect(center=(30,55))
         self.font = pygame.font.Font(None, 24)
         self.hidden = False
-    def add_item(self,item):
+    def add_item(self,item,count=1,custom_image=None):
         if item in self.items.keys():
-            self.items[item]["count"]+=1
+            self.items[item]["count"]+=count
             self.items[item]["visual_count"] = self.font.render(str(self.items[item]["count"]), True, (255,255,255))
         else:
             self.items[item] = dict({
-                "image" : pygame.transform.scale(pygame.image.load(item_images[item]).convert_alpha(), (25,25)),
-                "count" : 1,
-                "visual_count" : self.font.render(str(1), True, (255,255,255))
+                "image" : pygame.transform.scale(pygame.image.load(item_images[item if custom_image == None else custom_image]).convert_alpha(), (25,25)),
+                "count" : count,
+                "visual_count" : self.font.render(str(count), True, (255,255,255))
             })
             self.image=pygame.Surface((self.image.get_width() + 50, self.image.get_height()))
             self.image.fill((181,153,128))
@@ -123,8 +123,20 @@ class Player(pygame.sprite.Sprite):
         self.walking_type = 0
         
         self.current_tool = None
-        
         self.tools = []
+        
+        self.current_seed = 0
+        
+        self.seeds = [
+            dict({
+                "name" : "Wheat",
+                "count" : 100
+            }),
+            dict({
+                "name" : "Pumpkin",
+                "count" : 100
+            })
+        ]
         
     def update(self, movement):
         #self.rect = self.rect.move(movement[0], movement[1])
@@ -201,11 +213,16 @@ last = time.time()
 delays = []
 
 inventory = Inventory()
+inventory.add_item("seeds", count=player.seeds[player.current_seed]["count"], custom_image=player.seeds[player.current_seed]["name"])
 for i in range(100):
     inventory.add_item("grass")
     
 player.tools.append(Tractor(player))
 player.tools.append(WateringCan(player))
+player.tools.append(WaterPlane(player))
+player.tools.append(Shovel(player))
+player.tools.append(Sickle(player))
+
 menu = Menu(background_image="images/angry.jpg")
 day_font = pygame.font.Font(None, 48)
 day_writing = day_font.render("Day " + str(day), True, (0,0,0))
@@ -218,6 +235,8 @@ def day_change():
             if isinstance(tile, GroundTile):
                 if not tile.crop == None:
                     tile.crop.iterate()
+
+
 
 while not quit:
     # Process player inputs.
@@ -255,7 +274,33 @@ while not quit:
                 case pygame.K_3:
                     if len(player.tools) >= 3:
                         player.current_tool = player.tools[2]
-                    
+                case pygame.K_4:
+                    if len(player.tools) >= 4:
+                        player.current_tool = player.tools[3]
+                case pygame.K_5:
+                    if len(player.tools) >= 5:
+                        player.current_tool = player.tools[4]
+                case pygame.K_6:
+                    if len(player.tools) >= 6:
+                        player.current_tool = player.tools[5]
+                case pygame.K_LEFT:
+                    player.current_seed-=1
+                    if player.current_seed<0:
+                        player.current_seed = len(player.seeds)-1
+                    inventory.items["seeds"] = dict({
+                        "image" : pygame.transform.scale(pygame.image.load(item_images[player.seeds[player.current_seed]["name"]]).convert_alpha(), (25,25)),
+                        "count" : player.seeds[player.current_seed]["count"],
+                        "visual_count" : inventory.font.render(str(player.seeds[player.current_seed]["count"]), True, (255,255,255))
+                    })
+                case pygame.K_RIGHT:
+                    player.current_seed+=1
+                    if player.current_seed >= len(player.seeds):
+                        player.current_seed = 0    
+                    inventory.items["seeds"] = dict({
+                        "image" : pygame.transform.scale(pygame.image.load(item_images[player.seeds[player.current_seed]["name"]]).convert_alpha(), (25,25)),
+                        "count" : player.seeds[player.current_seed]["count"],
+                        "visual_count" : inventory.font.render(str(player.seeds[player.current_seed]["count"]), True, (255,255,255))
+                    })                
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
             match event.key:
@@ -283,6 +328,21 @@ while not quit:
                         elif player.current_tool.type == "watering":
                             if tile.tilled and not tile.watered:
                                 tile.watered=True
+                        elif player.current_tool.type == "planting":
+                            if tile.tilled and tile.crop==None:
+                                if player.seeds[player.current_seed]["count"] > 0:
+                                    inventory.items["seeds"]["count"]-=1
+                                    player.seeds[player.current_seed]["count"]-=1
+                                    inventory.items["seeds"]["visual_count"] = inventory.font.render(str(inventory.items["seeds"]["count"]), True, (255,255,255))
+                                    match player.seeds[player.current_seed]["name"]:
+                                        case "Pumpkin":
+                                            tile.crop=PumpkinTile(tile.rect.center[0], tile.rect.center[1])
+                                        case "Wheat":
+                                            tile.crop=WheatTile(tile.rect.center[0], tile.rect.center[1])
+                        elif player.current_tool.type == "harvesting":
+                            if (not tile.crop==None) and (tile.crop.dead or tile.crop.grown):
+                                tile.crop = None
+    inventory
     for row in map:
         for tile in row:
             if not tile == None:

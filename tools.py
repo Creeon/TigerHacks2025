@@ -37,3 +37,14 @@ class Tractor(Tool):
     def __init__(self, player):
         super().__init__("Tractor", "images/tractor.png", 500, 500, player, "tilling")
         
+class WaterPlane(Tool):    
+    def __init__(self, player):
+        super().__init__("Water Plane", "images/water_plane.png", 500, 500, player, "watering")
+        
+class Shovel(Tool):
+    def __init__(self, player):
+        super().__init__("Shovel", "images/shovel.png", 100, 50, player, "planting")
+        
+class Sickle(Tool):
+    def __init__(self, player):
+        super().__init__("Sickle", "images/sickle.png", 100, 50, player, "harvesting")

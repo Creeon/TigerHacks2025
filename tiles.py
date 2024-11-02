@@ -162,6 +162,8 @@ class GroundTile(Tile):
             else:
                 self.image = self.tilled_image
         self.rect = self.rect.move(movement[0], movement[1])
+        if not self.crop == None:
+            self.crop.rect = self.crop.rect.move(movement[0], movement[1])
     def iterate(self):
         self.watered=False
         if self.crop == None and self.tilled:
