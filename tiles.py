@@ -80,12 +80,7 @@ class Carrot(CropTile):
         y = 0,
     ):
         super().__init__("Wheat", 10, 10, width=50, height=50, x=x, y=y, collision=False, image="images/best_wheat.png", interact_range=100)
-        
-class GateH(InteractableTile):
-    def __init__(self,x:int,y:int):
-        super().__init__(width=200, height=10, x=x, y=y, color=(0,0,0), collision=True, interact_range=50)
-    def interact(self):
-        self.collision = not self.collision
+
         
 class Gate(InteractableTile):
     def __init__(self,x:int,y:int,rot:int):
