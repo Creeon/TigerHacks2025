@@ -4,6 +4,8 @@ import time
 import random
 #from tiles import Tile, InteractableTile, CropTile, WheatTile
 from tiles import *
+from tools import *
+from misc import *
 
 #********INITIALIZE SCREEN/BOARD********
 pygame.init()
@@ -18,7 +20,8 @@ keys_pressed = [] #Stores key currently being pressed (for harvest time tracking
 #Dictionary of item images
 item_images = dict({
     "Wheat" : "images/best_wheat.png",
-    "grass" : "images/grass.png"
+    "grass" : "images/grass.png",
+    "Pumpkin" : "images/pumpkin.png"
 })
 
 #Function to check if player and screen-edge tile are touching
@@ -37,6 +40,12 @@ def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect,
     
     return new_movement
 
+def checkRange(rect_1: pygame.rect.Rect, rect_2:pygame.rect.Rect, distance):
+    rect_1.inflate_ip(distance*2,distance*2)
+    would_collide = rect_1.colliderect(rect_2)
+    rect_1.inflate_ip(-distance*2,-distance*2)
+    return would_collide
+
 #********INVENTORY CLASS********
 class Inventory():
     #initializiation
@@ -46,7 +55,6 @@ class Inventory():
         self.image.fill((125,125,125))
         self.rect = self.image.get_rect(center=(30,55))
         self.font = pygame.font.Font(None, 24)
-    #Function to add item to inventory
     def add_item(self,item):
         if item in self.items.keys():
             self.items[item]["count"]+=1
@@ -76,48 +84,35 @@ class Player(pygame.sprite.Sprite):
         self.image.fill((0, 0, 0))
 
         self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))
+        self.orientation = 270
+        
+        self.animation_change = 30
+        self.idle = pygame.Surface((50, 50))
+        self.idle.fill((0, 0, 0))
+        self.walking = pygame.Surface((50, 50))
+        self.walking.fill((0,0,200))
+        
+        self.frame_counter=0
         
     def update(self, movement):
-        self.rect = self.rect.move(movement[0], movement[1])
-        
-        
-    def checkXCollision(self, x, movex):
-        if movex > 0:
-            right = self.rect.right
-            if right > x:
-                return movex
-            if right+movex > x:
-                return x-right
-            else:
-                return movex
-        elif movex < 0:
-            left = self.rect.left
-            if left < x:
-                return movex
-            if left+movex < x:
-                return x-left
-            else:
-                return movex
-        return 0
-    
-    def checkYCollision(self, y, movey):
-        if movey < 0:
-            top = self.rect.top
-            if top < y:
-                return movey
-            if top+movey < y:
-                return y-top
-            else:
-                return movey
-        elif movey > 0:
-            bottom = self.rect.bottom
-            if bottom > y:
-                return movey
-            if bottom+movey > y:
-                return y-bottom
-            else:
-                return movey
-        return 0
+        #self.rect = self.rect.move(movement[0], movement[1])
+        if movement[0]==0 and movement[1]==0:
+            self.frame_counter=0
+            self.image=self.idle
+        else:
+            if self.frame_counter%30==0:
+                if self.image==self.idle:
+                    self.image=self.walking
+                else:
+                    self.image=self.idle
+            self.frame_counter+=1
+        if movement[0] == 0:
+            if not movement[1] == 0:
+                self.orientation = 270 if movement[1] > 0 else 90
+        else:
+            if not movement[0] == 0:
+                self.orientation = 0 if movement[0] > 0 else 180
+        print(self.orientation)
         
 def getSpeed(keys, speed):
     target_speed = [0,0,0,0] #+x -x +y -y
@@ -161,8 +156,12 @@ for i in range(48):
     tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
     x+=50
     for i in range(48):
-        tiles.add(Tile(width=50, height=50, x=x, y=y, image="images/grass.png", collision=False))
-        layers[1].add(WheatTile(x,y))
+        if random.randint(0,1) == 1:
+            tiles.add(Tile(width=50, height=50, x=x, y=y, image="images/grass.png", collision=False))
+            layers[1].add(WheatTile(x,y))
+        else:
+            tiles.add(Tile(width=50, height=50, x=x, y=y, image="images/grass.png", collision=False))
+            layers[1].add(PumpkinTile(x,y))
         x+=50
     tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
     y+=50
@@ -171,6 +170,7 @@ for i in range(50):
     tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
     x+=50
 layers[3].add(player)
+layers[2].add(Gate(400,400, 90))
 #layers[2].add(InteractableTile(x=150, y=150, image="images/better_wheat.png"))
 #layers[2].add(InteractableTile(x=450, y=150, image="images/better_wheat.png"))
 #layers[2].add(WheatTile(100,500))
@@ -183,6 +183,9 @@ delays = []
 inventory = Inventory()
 for i in range(100):
     inventory.add_item("grass")
+    
+tool = Tool("test", "images/temp_tool.png", 35, 650, player)
+menu = Menu(background_image="images/angry.jpg")
 
 while not quit:
     # Process player inputs.
@@ -192,28 +195,42 @@ while not quit:
             raise SystemExit
         elif event.type == pygame.KEYDOWN:
             keys_pressed.append(event.key)
+            if(event.key == pygame.K_e):
+                for layer in layers:
+                    for s in layer:
+                        if isinstance(s, Gate):
+                            if checkRange(player.rect, s.rect, s.interact_range):
+                                s.interact()
+            elif(event.key == pygame.K_k):
+                tool.hidden=False
+            elif(event.key == pygame.K_i):
+                inventory.hidden = not inventory.hidden
+            elif(event.key == pygame.K_p):
+                menu.hidden = not menu.hidden
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
-        
-    if pygame.K_e in keys_pressed or pygame.K_l in keys_pressed:
-        for layer in layers:
-            for s in layer:
-                if isinstance(s, CropTile):
-                    if pygame.Vector2(s.rect.center).distance_to(pygame.Vector2(player.rect.center)) <= s.interact_range:
-                        s.interact(inventory)
+            if event.key == pygame.K_k:
+                tool.hidden=True
 
     screen.fill((50,0,0))  # Fill the display with a solid color
     
     player_speed = getSpeed(keys_pressed, 10)
     
-    for tile in tiles:
-        if tile.collision:
-            player_speed = checkCollision(player.rect, tile.rect, player_speed)
+    for layer in layers:
+        for tile in layer:
+            if (not type(tile) == Player) and tile.collision:
+                player_speed = checkCollision(player.rect, tile.rect, player_speed)
+            if not tool.hidden:
+                if isinstance(tile, CropTile):
+                    if tile.rect.colliderect(tool.rect):
+                        tile.interact(inventory)
     i = 0
     for layer in layers:
         if not i == 3:
             layer.update([-player_speed[0], -player_speed[1]])
         i+=1
+        
+    player.update(player_speed)
     
     #print(player_speed)
 
@@ -222,8 +239,13 @@ while not quit:
     
     for layer in layers:
         layer.draw(screen)
-        
-    inventory.draw(screen)
+    if not inventory.hidden:
+        inventory.draw(screen)
+    tool.update()
+    if not tool.hidden:
+        screen.blit(tool.image, tool.rect)
+    if not menu.hidden:
+        screen.blit(menu.image, menu.rect)
 
     pygame.display.flip()  # Refresh on-screen display
     delays.append(time.time() - last)
