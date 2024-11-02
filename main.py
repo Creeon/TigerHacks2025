@@ -15,7 +15,7 @@ max_frames = 60
 keys_pressed = []
 
 item_images = dict({
-    "wheat" : "images/best_wheat.png",
+    "Wheat" : "images/best_wheat.png",
     "grass" : "images/grass.png"
 })
 
@@ -139,7 +139,9 @@ player = Player()
 #tile = Tile(width=100, height=100, x = 100, y=100)
 #tile2 = Tile(width=100, height=100, x = 220, y=200, color=(0,255,0))
 keys_pressed = []
+
 tiles = pygame.sprite.Group()
+layers = [tiles, pygame.sprite.Group(), pygame.sprite.Group(), pygame.sprite.Group()]
 
 x=25
 y=25
@@ -154,6 +156,7 @@ for i in range(48):
     x+=50
     for i in range(48):
         tiles.add(Tile(width=50, height=50, x=x, y=y, image="images/grass.png", collision=False))
+        layers[1].add(WheatTile(x,y))
         x+=50
     tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
     y+=50
@@ -161,11 +164,10 @@ for i in range(48):
 for i in range(50):
     tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
     x+=50
-layers = [tiles, pygame.sprite.Group(), pygame.sprite.Group(), pygame.sprite.Group()]
 layers[3].add(player)
-layers[2].add(InteractableTile(x=150, y=150, image="images/better_wheat.png"))
-layers[2].add(InteractableTile(x=450, y=150, image="images/better_wheat.png"))
-layers[2].add(WheatTile(100,500))
+#layers[2].add(InteractableTile(x=150, y=150, image="images/better_wheat.png"))
+#layers[2].add(InteractableTile(x=450, y=150, image="images/better_wheat.png"))
+#layers[2].add(WheatTile(100,500))
 
 
 
@@ -173,7 +175,6 @@ last = time.time()
 delays = []
 
 inventory = Inventory()
-inventory.add_item("wheat")
 for i in range(100):
     inventory.add_item("grass")
 
@@ -189,9 +190,9 @@ while not quit:
                 case pygame.K_l | pygame.K_e:
                     for layer in layers:
                         for s in layer:
-                            if type(s) == WheatTile:
+                            if isinstance(s, CropTile):
                                 if pygame.Vector2(s.rect.center).distance_to(pygame.Vector2(player.rect.center)) <= s.interact_range:
-                                    s.interact()
+                                    s.interact(inventory)
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
         
