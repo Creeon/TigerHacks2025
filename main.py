@@ -17,7 +17,8 @@ keys_pressed = [] #Stores key currently being pressed (for harvest time tracking
 
 #Dictionary of item images
 item_images = dict({
-    "wheat" : "images/best_wheat.png"
+    "wheat" : "images/best_wheat.png",
+    "grass" : "images/grass.png"
 })
 
 #Function to check if player and screen-edge tile are touching
@@ -41,25 +42,29 @@ class Inventory():
     #initializiation
     def __init__(self):
         self.items=dict()
-        self.image=pygame.Surface((50,40))
+        self.image=pygame.Surface((50,90))
         self.image.fill((125,125,125))
-        self.rect = self.image.get_rect(center=(30,25))
+        self.rect = self.image.get_rect(center=(30,55))
+        self.font = pygame.font.Font(None, 24)
     #Function to add item to inventory
     def add_item(self,item):
         if item in self.items.keys():
             self.items[item]["count"]+=1
+            self.items[item]["visual_count"] = self.font.render(str(self.items[item]["count"]), True, (255,255,255))
         else:
             self.items[item] = dict({
                 "image" : pygame.transform.scale(pygame.image.load(item_images[item]).convert_alpha(), (25,25)),
-                "count" : 1
+                "count" : 1,
+                "visual_count" : self.font.render(str(1), True, (255,255,255))
             })
-            self.image=pygame.Surface((self.image.get_width() + 50, self.image.get_height))
-            self.rect = self.image.get_rect(center=(self.image.get_width()//2+5, 25))
+            self.image=pygame.Surface((self.image.get_width() + 50, self.image.get_height()))
+            self.rect = self.image.get_rect(center=(self.image.get_width()//2+5, 30))
     def draw(self, screen):
         screen.blit(self.image, self.rect)
         current_x = 25
         for item in self.items.items():
-            screen.blit(item["image"], item["image"].get_rect(center=(current_x, 20)))
+            screen.blit(item[1]["image"], item[1]["image"].get_rect(center=(current_x, 25)))
+            screen.blit(item[1]["visual_count"], item[1]["visual_count"].get_rect(center=(current_x, 50)))
             current_x+=50
         
 class Player(pygame.sprite.Sprite):
@@ -172,6 +177,12 @@ layers[2].add(WheatTile(100,500))
 
 last = time.time()
 delays = []
+
+inventory = Inventory()
+inventory.add_item("wheat")
+for i in range(100):
+    inventory.add_item("grass")
+
 while not quit:
     # Process player inputs.
     for event in pygame.event.get():
@@ -211,6 +222,8 @@ while not quit:
     
     for layer in layers:
         layer.draw(screen)
+        
+    inventory.draw(screen)
 
     pygame.display.flip()  # Refresh on-screen display
     delays.append(time.time() - last)
