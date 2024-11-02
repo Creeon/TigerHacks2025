@@ -90,40 +90,60 @@ class Player(pygame.sprite.Sprite):
         self.image.fill((0, 0, 0))
 
         self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))'''
-
         
-        self.image = pygame.Surface((50, 50))
-        self.image = pygame.image.load("images/Idle").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (50, 50))
-        self.rect = self.image.get_rect(center=(x,y))
-        self.orientation = 270
+        
         
         self.animation_change = 30
-        self.idle = pygame.Surface((50, 50))
-        self.idle.fill((0, 0, 0))
-        self.walking = pygame.Surface((50, 50))
-        self.walking.fill((0,0,200))
+        self.walking_1 = dict({
+            "0" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "180" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "270" : pygame.transform.scale(pygame.image.load("images/For_Walk1.png").convert_alpha(), (100,100))
+        })
+        self.walking_2 = dict({
+            "0" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "180" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "270" : pygame.transform.scale(pygame.image.load("images/For_Walk2.png").convert_alpha(), (100,100))
+        })
+        self.idle = dict({
+            "0" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "180" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "270" : pygame.transform.scale(pygame.image.load("images/Idle.png").convert_alpha(), (100,100))
+        })
+        
+        self.image = self.idle["270"]
+        self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))
+        self.orientation = 270
         
         self.frame_counter=0
         
+        self.walking_type = 0
+        
     def update(self, movement):
         #self.rect = self.rect.move(movement[0], movement[1])
-        if movement[0]==0 and movement[1]==0:
-            self.frame_counter=0
-            self.image=self.idle
-        else:
-            if self.frame_counter%30==0:
-                if self.image==self.idle:
-                    self.image=self.walking
-                else:
-                    self.image=self.idle
-            self.frame_counter+=1
         if movement[0] == 0:
             if not movement[1] == 0:
                 self.orientation = 270 if movement[1] > 0 else 90
         else:
             if not movement[0] == 0:
                 self.orientation = 0 if movement[0] > 0 else 180
+        if movement[0]==0 and movement[1]==0:
+            self.frame_counter=0
+            self.walking_type=0
+            self.image = self.idle[str(self.orientation)]
+        else:
+            if self.frame_counter%30==0:
+                self.walking_type+=1
+                if self.walking_type >= 2:
+                    self.walking_type = 0
+                match self.walking_type:
+                    case 0:
+                        self.image = self.walking_1[str(self.orientation)]
+                    case 1:
+                        self.image = self.walking_2[str(self.orientation)]
+            self.frame_counter+=1
         print(self.orientation)
         
 def getSpeed(keys, speed):
