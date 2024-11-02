@@ -3,23 +3,32 @@ import math
 import time
 import random
 #from tiles import Tile, InteractableTile, CropTile, WheatTile
-from tiles import *
-from tools import *
-from misc import *
+
 
 pygame.init()
 print(pygame.display.Info())
 screen_width, screen_height = 1200, 700
+day = 1
 screen = pygame.display.set_mode((screen_width,screen_height))
 clock = pygame.time.Clock()
 quit = False
 max_frames = 60
 keys_pressed = []
 
+from tiles import *
+from tools import *
+from misc import *
+
 item_images = dict({
     "Wheat" : "images/best_wheat.png",
     "grass" : "images/grass.png",
     "Pumpkin" : "images/pumpkin.png"
+})
+
+player_walk = dict({
+    "forward1" : "images/For_Walk1.png",
+    "forward2" : "images/For_Walk2.png",
+    "Idle" : "images/Idle.png"
 })
 
 def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect, movement):
@@ -47,7 +56,7 @@ class Inventory():
     def __init__(self):
         self.items=dict()
         self.image=pygame.Surface((50,90))
-        self.image.fill((125,125,125))
+        self.image.fill((181,153,128))
         self.rect = self.image.get_rect(center=(30,55))
         self.font = pygame.font.Font(None, 24)
         self.hidden = False
@@ -62,7 +71,7 @@ class Inventory():
                 "visual_count" : self.font.render(str(1), True, (255,255,255))
             })
             self.image=pygame.Surface((self.image.get_width() + 50, self.image.get_height()))
-            self.image.fill((255,255,255))
+            self.image.fill((181,153,128))
             self.rect = self.image.get_rect(center=(self.image.get_width()//2+5, 30))
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -77,38 +86,64 @@ class Player(pygame.sprite.Sprite):
         global screen_width, screen_height
         
         super().__init__()
-        self.image = pygame.Surface((50, 50))
+        '''self.image = pygame.Surface((50, 50))
         self.image.fill((0, 0, 0))
 
+        self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))'''
+        
+        
+        
+        self.animation_change = 30
+        self.walking_1 = dict({
+            "0" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "180" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "270" : pygame.transform.scale(pygame.image.load("images/For_Walk1.png").convert_alpha(), (100,100))
+        })
+        self.walking_2 = dict({
+            "0" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "180" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "270" : pygame.transform.scale(pygame.image.load("images/For_Walk2.png").convert_alpha(), (100,100))
+        })
+        self.idle = dict({
+            "0" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "180" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (100,100)),
+            "270" : pygame.transform.scale(pygame.image.load("images/Idle.png").convert_alpha(), (100,100))
+        })
+        
+        self.image = self.idle["270"]
         self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))
         self.orientation = 270
         
-        self.animation_change = 30
-        self.idle = pygame.Surface((50, 50))
-        self.idle.fill((0, 0, 0))
-        self.walking = pygame.Surface((50, 50))
-        self.walking.fill((0,0,200))
-        
         self.frame_counter=0
+        
+        self.walking_type = 0
         
     def update(self, movement):
         #self.rect = self.rect.move(movement[0], movement[1])
-        if movement[0]==0 and movement[1]==0:
-            self.frame_counter=0
-            self.image=self.idle
-        else:
-            if self.frame_counter%30==0:
-                if self.image==self.idle:
-                    self.image=self.walking
-                else:
-                    self.image=self.idle
-            self.frame_counter+=1
         if movement[0] == 0:
             if not movement[1] == 0:
                 self.orientation = 270 if movement[1] > 0 else 90
         else:
             if not movement[0] == 0:
                 self.orientation = 0 if movement[0] > 0 else 180
+        if movement[0]==0 and movement[1]==0:
+            self.frame_counter=0
+            self.walking_type=0
+            self.image = self.idle[str(self.orientation)]
+        else:
+            if self.frame_counter%self.animation_change==0:
+                self.walking_type+=1
+                if self.walking_type >= 2:
+                    self.walking_type = 0
+                match self.walking_type:
+                    case 0:
+                        self.image = self.walking_1[str(self.orientation)]
+                    case 1:
+                        self.image = self.walking_2[str(self.orientation)]
+            self.frame_counter+=1
         print(self.orientation)
         
 def getSpeed(keys, speed):
@@ -183,6 +218,16 @@ for i in range(100):
     
 tool = Tool("test", "images/tractor.png", 500, 500, player)
 menu = Menu(background_image="images/angry.jpg")
+day_font = pygame.font.Font(None, 48)
+day_writing = day_font.render("Day " + str(day), True, (0,0,0))
+day_rect = day_writing.get_rect(center=(screen_width-100, 50))
+
+def day_change():
+    global player, layers, day
+    for layer in layers:
+        for tile in layer:
+            if isinstance(tile, CropTile):
+                tile.iterate()
 
 while not quit:
     # Process player inputs.
@@ -204,6 +249,11 @@ while not quit:
                 inventory.hidden = not inventory.hidden
             elif(event.key == pygame.K_p):
                 menu.hidden = not menu.hidden
+            elif(event.key == pygame.K_r):
+                day+=1
+                day_writing = day_font.render("Day " + str(day), True, (0,0,0))
+                day_rect = day_writing.get_rect(center=(screen_width-100, 50))
+                day_change()
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
             if event.key == pygame.K_k:
@@ -241,8 +291,13 @@ while not quit:
     tool.update()
     if not tool.hidden:
         screen.blit(tool.image, tool.rect)
+        
+    screen.blit(day_writing, day_rect)
+        
     if not menu.hidden:
         screen.blit(menu.image, menu.rect)
+
+        
 
     pygame.display.flip()  # Refresh on-screen display
     delays.append(time.time() - last)
