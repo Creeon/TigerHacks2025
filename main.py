@@ -25,6 +25,12 @@ item_images = dict({
     "Pumpkin" : "images/pumpkin.png"
 })
 
+player_walk = dict({
+    "forward1" : "images/For_Walk1.png",
+    "forward2" : "images/For_Walk2.png",
+    "Idle" : "images/Idle.png"
+})
+
 def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect, movement):
     if moving_rect.colliderect(static_rect):
         return movement
@@ -50,7 +56,7 @@ class Inventory():
     def __init__(self):
         self.items=dict()
         self.image=pygame.Surface((50,90))
-        self.image.fill((125,125,125))
+        self.image.fill((181,153,128))
         self.rect = self.image.get_rect(center=(30,55))
         self.font = pygame.font.Font(None, 24)
         self.hidden = False
@@ -65,7 +71,7 @@ class Inventory():
                 "visual_count" : self.font.render(str(1), True, (255,255,255))
             })
             self.image=pygame.Surface((self.image.get_width() + 50, self.image.get_height()))
-            self.image.fill((125,125,125))
+            self.image.fill((181,153,128))
             self.rect = self.image.get_rect(center=(self.image.get_width()//2+5, 30))
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -80,10 +86,16 @@ class Player(pygame.sprite.Sprite):
         global screen_width, screen_height
         
         super().__init__()
-        self.image = pygame.Surface((50, 50))
+        '''self.image = pygame.Surface((50, 50))
         self.image.fill((0, 0, 0))
 
-        self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))
+        self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))'''
+
+        
+        self.image = pygame.Surface((50, 50))
+        self.image = pygame.image.load("images/Idle").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (50, 50))
+        self.rect = self.image.get_rect(center=(x,y))
         self.orientation = 270
         
         self.animation_change = 30
