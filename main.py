@@ -96,7 +96,7 @@ class Player(pygame.sprite.Sprite):
         self.animation_change = 20
         self.walking_1 = dict({
             "0" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/right_walk.png").convert_alpha(), (100,100)),
-            "90" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/back_walk2.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/back_walk1.png").convert_alpha(), (100,100)),
             "180" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/left_walk.png").convert_alpha(), (100,100)),
             "270" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/for_walk1.png").convert_alpha(), (100,100))
         })
