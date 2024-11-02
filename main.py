@@ -36,6 +36,12 @@ def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect,
     
     return new_movement
 
+def checkRange(rect_1: pygame.rect.Rect, rect_2:pygame.rect.Rect, distance):
+    rect_1.inflate_ip(distance*2,distance*2)
+    would_collide = rect_1.colliderect(rect_2)
+    rect_1.inflate_ip(-distance*2,-distance*2)
+    return would_collide
+
 class Inventory():
     def __init__(self):
         self.items=dict()
@@ -43,6 +49,7 @@ class Inventory():
         self.image.fill((125,125,125))
         self.rect = self.image.get_rect(center=(30,55))
         self.font = pygame.font.Font(None, 24)
+        self.hidden = False
     def add_item(self,item):
         if item in self.items.keys():
             self.items[item]["count"]+=1
@@ -74,8 +81,26 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))
         self.orientation = 270
         
+        self.animation_change = 30
+        self.idle = pygame.Surface((50, 50))
+        self.idle.fill((0, 0, 0))
+        self.walking = pygame.Surface((50, 50))
+        self.walking.fill((0,0,200))
+        
+        self.frame_counter=0
+        
     def update(self, movement):
         #self.rect = self.rect.move(movement[0], movement[1])
+        if movement[0]==0 and movement[1]==0:
+            self.frame_counter=0
+            self.image=self.idle
+        else:
+            if self.frame_counter%30==0:
+                if self.image==self.idle:
+                    self.image=self.walking
+                else:
+                    self.image=self.idle
+            self.frame_counter+=1
         if movement[0] == 0:
             if not movement[1] == 0:
                 self.orientation = 270 if movement[1] > 0 else 90
@@ -168,10 +193,12 @@ while not quit:
                 for layer in layers:
                     for s in layer:
                         if isinstance(s, Gate):
-                            if pygame.Vector2(s.rect.center).distance_to(pygame.Vector2(player.rect.center)) <= s.interact_range:
+                            if checkRange(player.rect, s.rect, s.interact_range):
                                 s.interact()
             elif(event.key == pygame.K_k):
                 tool.hidden=False
+            elif(event.key == pygame.K_i):
+                inventory.hidden = not inventory.hidden
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
             if event.key == pygame.K_k:
@@ -204,8 +231,8 @@ while not quit:
     
     for layer in layers:
         layer.draw(screen)
-        
-    inventory.draw(screen)
+    if not inventory.hidden:
+        inventory.draw(screen)
     tool.update()
     if not tool.hidden:
         screen.blit(tool.image, tool.rect)

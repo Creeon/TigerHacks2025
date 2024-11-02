@@ -89,4 +89,8 @@ class Gate(InteractableTile):
         self.rect = self.image.get_rect(center=self.rect.center)
     def interact(self):
         self.collision = not self.collision
+        if self.collision:
+            self.image.fill((0,0,0))
+        else:
+            self.image.fill((0,125,0))
         
