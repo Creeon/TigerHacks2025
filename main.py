@@ -14,6 +14,10 @@ quit = False
 max_frames = 60
 keys_pressed = []
 
+item_images = dict({
+    "wheat" : "images/best_wheat.png"
+})
+
 def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect, movement):
     if moving_rect.colliderect(static_rect):
         return movement
@@ -28,6 +32,29 @@ def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect,
     moving_rect.y -= movement[1]
     
     return new_movement
+
+class Inventory():
+    def __init__(self):
+        self.items=dict()
+        self.image=pygame.Surface((50,40))
+        self.image.fill((125,125,125))
+        self.rect = self.image.get_rect(center=(30,25))
+    def add_item(self,item):
+        if item in self.items.keys():
+            self.items[item]["count"]+=1
+        else:
+            self.items[item] = dict({
+                "image" : pygame.transform.scale(pygame.image.load(item_images[item]).convert_alpha(), (25,25)),
+                "count" : 1
+            })
+            self.image=pygame.Surface((self.image.get_width() + 50, self.image.get_height))
+            self.rect = self.image.get_rect(center=(self.image.get_width()//2+5, 25))
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+        current_x = 25
+        for item in self.items.items():
+            screen.blit(item["image"], item["image"].get_rect(center=(current_x, 20)))
+            current_x+=50
         
 class Player(pygame.sprite.Sprite):
     def __init__(self):
