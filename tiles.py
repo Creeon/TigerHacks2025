@@ -49,5 +49,11 @@ class CropTile(InteractableTile):
         self.grow_time = grow_time
         self.harvest_time = harvest_time
         
-        
+class WheatTile(CropTile):
+    def __init__(
+        self,
+        x = 0,
+        y = 0,
+    ):
+        super().__init__("Wheat", 10, 10, width=50, height=50, x=x, y=y, collision=False, image="images/better_wheat.png", interact_range=100)
         
