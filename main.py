@@ -1,4 +1,6 @@
 import pygame
+import sys
+from button import Button
 import math
 import time
 import random
@@ -225,6 +227,106 @@ day_font = pygame.font.Font(None, 48)
 day_writing = day_font.render("Day " + str(day), True, (0,0,0))
 day_rect = day_writing.get_rect(center=(screen_width-100, 50))
 
+#************SHOP MENU************
+#Font size function from Baraltech's tutorial. Found on his gitHub as part of his menu tutorial here: https://github.com/baraltech/Menu-System-PyGame/blob/main/main.py
+def get_font(size):
+    return pygame.font.Font(None, size)
+
+#Class to store static variable so shop menu can open and close
+class shopMenu:
+    menu_quit = True
+    screen = pygame.display.set_mode((screen_width,screen_height))
+    menu_mouse_pos = pygame.mouse.get_pos() #Get mouse position
+    seed_button = Button(image = None, pos = (0,0), text_input = None, font = get_font(100), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+    tools_button = Button(image = None, pos = (0,0), text_input = None, font = get_font(100), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+
+#Function to open and close main shop menu, initialize, etc
+def shopMenuShow():
+    background = pygame.transform.scale(pygame.image.load("images/angry.jpg").convert_alpha(), (400, 400))
+    shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
+
+    shopMenu.menu_quit = not shopMenu.menu_quit
+    #While quit is false
+    print("Shop menu open!")
+    while (shopMenu.menu_quit == False):
+        #Credit for the majority of this menu structure AND Button class to Baraltech in this tutorial (https://www.youtube.com/watch?v=GMBqjxcKogA)
+        menu_mouse_pos = pygame.mouse.get_pos() #Get mouse position
+        shop_text_header = get_font(48).render("SHOP", True, (255, 255, 255))
+        shop_menu_rect = shop_text_header.get_rect(center = (screen_width // 2,(screen_height - 200)// 2))
+
+        shopMenu.seed_button = Button(image = pygame.image.load("images/CharacterFrames/for_walk1.png"), pos = (screen_width // 2,(screen_height - 100)// 2),
+                             text_input = "SEEDS", font = get_font(48), base_color = (0,255,0), hovering_color = (0, 0, 0))
+        shopMenu.tools_button = Button(image = pygame.image.load("images/CharacterFrames/for_walk1.png"), pos = (screen_width // 2,(screen_height + 200)// 2),
+                              text_input = "TOOLS", font = get_font(48), base_color = (0, 0, 255), hovering_color = (0, 0, 0))
+        
+        shopMenu.screen.blit(shop_text_header, shop_menu_rect)
+
+        for button in [shopMenu.seed_button, shopMenu.tools_button]:
+            button.changeColor(menu_mouse_pos)
+            button.update(shopMenu.screen)
+    
+        #pygame.display.update()
+
+    #If quit is true, then the menu must already be open -- so close it!
+    print("Close shop menu!")
+    shopMenu.menu_quit = True
+
+#Function to open seed window in shop
+def seedShop():
+    print("Seed shop!")
+    
+    while True:
+        seed_mouse_pos = pygame.mouse.get_pos()
+
+        shopMenu.screen.fill((117, 94, 74))
+
+        seed_text = get_font(48).render("SEED SCREEN", True, (0, 30, 0))
+        seed_rect = seed_text.get_rect(center = (screen_width // 2, (screen_height - 200)// 2))
+        shopMenu.screen.blit(seed_text, seed_rect)
+
+        seed_back = Button(image = None, pos = (screen_width // 2, (screen_height - 100)// 2),
+                           text_input = "BACK", font = get_font(48), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        
+        seed_back.changeColor(seed_mouse_pos)
+        seed_back.update(shopMenu.screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if seed_back.checkForInput(seed_mouse_pos):
+                    shopMenuShow()
+
+        pygame.display.update()
+
+
+#Function to open tool window in shop
+def toolsShop():
+    print("Tool shop!")
+
+    print("Seed shop!")
+    
+    while True:
+        tools_mouse_pos = pygame.mouse.get_pos()
+
+        shopMenu.screen.fill((117, 94, 74))
+
+        tools_text = get_font(48).render("TOOLS SCREEN", True, (0, 0, 30))
+        tools_rect = tools_text.get_rect(center = (screen_width // 2, (screen_height - 200)// 2))
+        shopMenu.screen.blit(tools_text, tools_rect)
+
+        tools_back = Button(image = None, pos = (screen_width // 2, (screen_height - 100)// 2),
+                           text_input = "BACK", font = get_font(48), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        
+        tools_back.changeColor(tools_mouse_pos)
+        tools_back.update(shopMenu.screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if tools_back.checkForInput(tools_mouse_pos):
+                    shopMenuShow()
+
+        pygame.display.update()
+
+
 def day_change():
     global player, layers, day
     for layer in layers:
@@ -252,6 +354,14 @@ while not quit:
                 inventory.hidden = not inventory.hidden
             elif(event.key == pygame.K_p):
                 menu.hidden = not menu.hidden
+            elif(event.key == pygame.K_x):
+                print("MENU!")
+                shopMenuShow()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if shopMenu.seed_button.checkForInput(shopMenu.menu_mouse_pos):
+                        seedShop()
+                    if shopMenu.tools_button.checkForInput(shopMenu.menu_mouse_pos):
+                        toolsShop()  
             elif(event.key == pygame.K_r):
                 day+=1
                 day_writing = day_font.render("Day " + str(day), True, (0,0,0))
