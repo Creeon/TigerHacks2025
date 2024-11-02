@@ -3,23 +3,32 @@ import math
 import time
 import random
 #from tiles import Tile, InteractableTile, CropTile, WheatTile
-from tiles import *
-from tools import *
-from misc import *
+
 
 pygame.init()
 print(pygame.display.Info())
 screen_width, screen_height = 1200, 700
+day = 1
 screen = pygame.display.set_mode((screen_width,screen_height))
 clock = pygame.time.Clock()
 quit = False
 max_frames = 60
 keys_pressed = []
 
+from tiles import *
+from tools import *
+from misc import *
+
 item_images = dict({
     "Wheat" : "images/best_wheat.png",
     "grass" : "images/grass.png",
     "Pumpkin" : "images/pumpkin.png"
+})
+
+player_walk = dict({
+    "forward1" : "images/For_Walk1.png",
+    "forward2" : "images/For_Walk2.png",
+    "Idle" : "images/Idle.png"
 })
 
 def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect, movement):
@@ -47,7 +56,7 @@ class Inventory():
     def __init__(self):
         self.items=dict()
         self.image=pygame.Surface((50,90))
-        self.image.fill((125,125,125))
+        self.image.fill((181,153,128))
         self.rect = self.image.get_rect(center=(30,55))
         self.font = pygame.font.Font(None, 24)
         self.hidden = False
@@ -62,6 +71,7 @@ class Inventory():
                 "visual_count" : self.font.render(str(1), True, (255,255,255))
             })
             self.image=pygame.Surface((self.image.get_width() + 50, self.image.get_height()))
+            self.image.fill((181,153,128))
             self.rect = self.image.get_rect(center=(self.image.get_width()//2+5, 30))
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -76,10 +86,16 @@ class Player(pygame.sprite.Sprite):
         global screen_width, screen_height
         
         super().__init__()
-        self.image = pygame.Surface((50, 50))
+        '''self.image = pygame.Surface((50, 50))
         self.image.fill((0, 0, 0))
 
-        self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))
+        self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))'''
+
+        
+        self.image = pygame.Surface((50, 50))
+        self.image = pygame.image.load("images/Idle").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (50, 50))
+        self.rect = self.image.get_rect(center=(x,y))
         self.orientation = 270
         
         self.animation_change = 30
@@ -180,8 +196,18 @@ inventory = Inventory()
 for i in range(100):
     inventory.add_item("grass")
     
-tool = Tool("test", "images/temp_tool.png", 35, 650, player)
+tool = Tool("test", "images/tractor.png", 500, 500, player)
 menu = Menu(background_image="images/angry.jpg")
+day_font = pygame.font.Font(None, 48)
+day_writing = day_font.render("Day " + str(day), True, (0,0,0))
+day_rect = day_writing.get_rect(center=(screen_width-100, 50))
+
+def day_change():
+    global player, layers, day
+    for layer in layers:
+        for tile in layer:
+            if isinstance(tile, CropTile):
+                tile.iterate()
 
 while not quit:
     # Process player inputs.
@@ -203,12 +229,17 @@ while not quit:
                 inventory.hidden = not inventory.hidden
             elif(event.key == pygame.K_p):
                 menu.hidden = not menu.hidden
+            elif(event.key == pygame.K_r):
+                day+=1
+                day_writing = day_font.render("Day " + str(day), True, (0,0,0))
+                day_rect = day_writing.get_rect(center=(screen_width-100, 50))
+                day_change()
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
             if event.key == pygame.K_k:
                 tool.hidden=True
 
-    screen.fill((50,0,0))  # Fill the display with a solid color
+    screen.fill((6,64,43))  # Fill the display with a solid color
     
     player_speed = getSpeed(keys_pressed, 10)
     
@@ -240,8 +271,13 @@ while not quit:
     tool.update()
     if not tool.hidden:
         screen.blit(tool.image, tool.rect)
+        
+    screen.blit(day_writing, day_rect)
+        
     if not menu.hidden:
         screen.blit(menu.image, menu.rect)
+
+        
 
     pygame.display.flip()  # Refresh on-screen display
     delays.append(time.time() - last)
