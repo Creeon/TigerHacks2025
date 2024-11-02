@@ -3,18 +3,21 @@ import math
 import time
 import random
 #from tiles import Tile, InteractableTile, CropTile, WheatTile
-from tiles import *
-from tools import *
-from misc import *
+
 
 pygame.init()
 print(pygame.display.Info())
 screen_width, screen_height = 1200, 700
+day = 1
 screen = pygame.display.set_mode((screen_width,screen_height))
 clock = pygame.time.Clock()
 quit = False
 max_frames = 60
 keys_pressed = []
+
+from tiles import *
+from tools import *
+from misc import *
 
 item_images = dict({
     "Wheat" : "images/best_wheat.png",
@@ -62,7 +65,7 @@ class Inventory():
                 "visual_count" : self.font.render(str(1), True, (255,255,255))
             })
             self.image=pygame.Surface((self.image.get_width() + 50, self.image.get_height()))
-            self.image.fill((255,255,255))
+            self.image.fill((125,125,125))
             self.rect = self.image.get_rect(center=(self.image.get_width()//2+5, 30))
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -183,6 +186,16 @@ for i in range(100):
     
 tool = Tool("test", "images/tractor.png", 500, 500, player)
 menu = Menu(background_image="images/angry.jpg")
+day_font = pygame.font.Font(None, 48)
+day_writing = day_font.render("Day " + str(day), True, (0,0,0))
+day_rect = day_writing.get_rect(center=(screen_width-100, 50))
+
+def day_change():
+    global player, layers, day
+    for layer in layers:
+        for tile in layer:
+            if isinstance(tile, CropTile):
+                tile.iterate()
 
 while not quit:
     # Process player inputs.
@@ -204,6 +217,11 @@ while not quit:
                 inventory.hidden = not inventory.hidden
             elif(event.key == pygame.K_p):
                 menu.hidden = not menu.hidden
+            elif(event.key == pygame.K_r):
+                day+=1
+                day_writing = day_font.render("Day " + str(day), True, (0,0,0))
+                day_rect = day_writing.get_rect(center=(screen_width-100, 50))
+                day_change()
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
             if event.key == pygame.K_k:
@@ -241,8 +259,13 @@ while not quit:
     tool.update()
     if not tool.hidden:
         screen.blit(tool.image, tool.rect)
+        
+    screen.blit(day_writing, day_rect)
+        
     if not menu.hidden:
         screen.blit(menu.image, menu.rect)
+
+        
 
     pygame.display.flip()  # Refresh on-screen display
     delays.append(time.time() - last)
