@@ -22,7 +22,8 @@ from misc import *
 item_images = dict({
     "Wheat" : "images/best_wheat.png",
     "grass" : "images/grass.png",
-    "Pumpkin" : "images/pumpkin.png"
+    "Pumpkin" : "images/pumpkin.png",
+    "fertilizer" : "images/fertilizer.png"
 })
 
 player_walk = dict({
@@ -80,6 +81,7 @@ class Inventory():
             screen.blit(item[1]["image"], item[1]["image"].get_rect(center=(current_x, 25)))
             screen.blit(item[1]["visual_count"], item[1]["visual_count"].get_rect(center=(current_x, 50)))
             current_x+=50
+            
         
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -216,17 +218,21 @@ inventory = Inventory()
 inventory.add_item("seeds", count=player.seeds[player.current_seed]["count"], custom_image=player.seeds[player.current_seed]["name"])
 for i in range(100):
     inventory.add_item("grass")
+inventory.add_item("fertilizer", count=100)
     
 player.tools.append(Tractor(player))
 player.tools.append(WateringCan(player))
 player.tools.append(WaterPlane(player))
 player.tools.append(Shovel(player))
 player.tools.append(Sickle(player))
+player.tools.append(FertilizingMachine(player))
 
 menu = Menu(background_image="images/angry.jpg")
 day_font = pygame.font.Font(None, 48)
 day_writing = day_font.render("Day " + str(day), True, (0,0,0))
 day_rect = day_writing.get_rect(center=(screen_width-100, 50))
+
+house = House(350,350)
 
 def day_change():
     global player, map, day
@@ -234,7 +240,8 @@ def day_change():
         for tile in row:
             if isinstance(tile, GroundTile):
                 if not tile.crop == None:
-                    tile.crop.iterate()
+                    tile.crop.iterate(tile.getRisk())
+                tile.iterate()
 
 
 
@@ -342,11 +349,20 @@ while not quit:
                         elif player.current_tool.type == "harvesting":
                             if (not tile.crop==None) and (tile.crop.dead or tile.crop.grown):
                                 tile.crop = None
-    inventory
+                        elif player.current_tool.type == "fertilizing":
+                            if tile.fertilized==False:
+                                if "fertilizer" in inventory.items.keys():
+                                    if inventory.items["fertilizer"]["count"]>0:
+                                        inventory.items["fertilizer"]["count"]-=1
+                                        inventory.items["fertilizer"]["visual_count"] = inventory.font.render(str(inventory.items["fertilizer"]["count"]), True, (255,255,255))
+                                        tile.fertilize()
+    player_speed=checkCollision(player.rect,house.rect,player_speed)
     for row in map:
         for tile in row:
             if not tile == None:
                 tile.update([-player_speed[0], -player_speed[1]])
+        
+    house.update([-player_speed[0], -player_speed[1]])        
         
     player.update(player_speed)
     
@@ -361,6 +377,8 @@ while not quit:
                 tile.display(screen)
     if not inventory.hidden:
         inventory.draw(screen)
+        
+    screen.blit(house.image,house.rect)
         
     screen.blit(player.image, player.rect)
     

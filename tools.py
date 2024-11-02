@@ -48,3 +48,7 @@ class Shovel(Tool):
 class Sickle(Tool):
     def __init__(self, player):
         super().__init__("Sickle", "images/sickle.png", 100, 50, player, "harvesting")
+        
+class FertilizingMachine(Tool):
+    def __init__(self,player):
+        super().__init__("Machine", "images/machine.png", 500,500,player,"fertilizing")
