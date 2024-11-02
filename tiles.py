@@ -87,3 +87,11 @@ class GateH(InteractableTile):
     def interact(self):
         self.collision = not self.collision
         
+class Gate(InteractableTile):
+    def __init__(self,x:int,y:int,rot:int):
+        super().__init__(width=200, height=10, x=x, y=y, color=(0,0,0), collision=True, interact_range=50)
+        self.image = pygame.transform.rotate(self.image,rot)
+        self.rect = self.image.get_rect(center=self.rect.center)
+    def interact(self):
+        self.collision = not self.collision
+        

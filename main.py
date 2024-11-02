@@ -131,7 +131,7 @@ for i in range(50):
     tiles.add(Tile(width=50, height=50, x=x, y=y, color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))))
     x+=50
 layers[3].add(player)
-layers[2].add(GateH(400,400))
+layers[2].add(Gate(400,400, 90))
 #layers[2].add(InteractableTile(x=150, y=150, image="images/better_wheat.png"))
 #layers[2].add(InteractableTile(x=450, y=150, image="images/better_wheat.png"))
 #layers[2].add(WheatTile(100,500))
@@ -156,7 +156,7 @@ while not quit:
             if(event.key == pygame.K_e):
                 for layer in layers:
                     for s in layer:
-                        if isinstance(s, GateH):
+                        if isinstance(s, Gate):
                             if pygame.Vector2(s.rect.center).distance_to(pygame.Vector2(player.rect.center)) <= s.interact_range:
                                 s.interact()
         elif event.type == pygame.KEYUP:
