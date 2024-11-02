@@ -154,8 +154,7 @@ inventory = Inventory()
 for i in range(100):
     inventory.add_item("grass")
     
-tool = Tool("test", "images/temp_tool.png", 35, 65, player)
-tool.hidden=False
+tool = Tool("test", "images/temp_tool.png", 35, 650, player)
 
 while not quit:
     # Process player inputs.
@@ -177,13 +176,6 @@ while not quit:
             keys_pressed.remove(event.key)
             if event.key == pygame.K_k:
                 tool.hidden=True
-        
-    if pygame.K_e in keys_pressed or pygame.K_l in keys_pressed:
-        for layer in layers:
-            for s in layer:
-                if isinstance(s, CropTile):
-                    if pygame.Vector2(s.rect.center).distance_to(pygame.Vector2(player.rect.center)) <= s.interact_range:
-                        s.interact(inventory)
 
     screen.fill((50,0,0))  # Fill the display with a solid color
     
@@ -193,6 +185,10 @@ while not quit:
         for tile in layer:
             if (not type(tile) == Player) and tile.collision:
                 player_speed = checkCollision(player.rect, tile.rect, player_speed)
+            if not tool.hidden:
+                if isinstance(tile, CropTile):
+                    if tile.rect.colliderect(tool.rect):
+                        tile.interact(inventory)
     i = 0
     for layer in layers:
         if not i == 3:
