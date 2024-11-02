@@ -25,9 +25,29 @@ class InteractableTile(Tile):
         color = (255,255,255),
         collision = True,
         image = None,
-        interact_range = 50,
-        interact_function = None
+        interact_range = 50
     ):
         super().__init__(width=width, height=height, x=x, y=y, color=color, collision=collision, image=image)
-        self.interact_range = interact_range
-        self.interact_function = interact_function
+        self.interact_range = interact_range        
+class CropTile(InteractableTile):
+    def __init__(
+        self,
+        crop_name: str,
+        grow_time: int,
+        harvest_time: int,
+        width = 50,
+        height = 50,
+        x = 0,
+        y = 0,
+        color = (255,255,255),
+        collision = True,
+        image = None,
+        interact_range = 50
+    ):
+        super().__init__(width=width, height=height, x=x, y=y, color=color, collision=collision, image=image, interact_range=interact_range)
+        self.crop_name = crop_name
+        self.grow_time = grow_time
+        self.harvest_time = harvest_time
+        
+        
+        
