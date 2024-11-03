@@ -316,8 +316,11 @@ while not quit:
                         player.current_tool.hidden=True
 
     screen.fill((6,64,43))  # Fill the display with a solid color
-    
+    speed_mod = 1   
+    if not player.current_tool == None:
+        speed_mod = player.current_tool.speed_mod
     player_speed = getSpeed(keys_pressed, 10)
+    player_speed = [player_speed[0] * speed_mod, player_speed[1] * speed_mod]
     
     for row in map:
         for tile in row:

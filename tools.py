@@ -12,6 +12,7 @@ class Tool(pygame.sprite.Sprite):
         self.hidden = True
         self.player = player
         self.type=type
+        self.speed_mod = 1
     def update(self):
         orientation = self.player.orientation
         x,y = self.player.rect.center[0], self.player.rect.center[1]
@@ -36,6 +37,7 @@ class WateringCan(Tool):
 class Tractor(Tool):    
     def __init__(self, player):
         super().__init__("Tractor", "images/tractor.png", 500, 500, player, "tilling")
+        self.speed_mod=5
         
 class WaterPlane(Tool):    
     def __init__(self, player):
