@@ -2,12 +2,18 @@ import pygame
 import random
 
 images = dict({
-    "baby_pumpkin" : pygame.transform.scale(pygame.image.load("images/pumpkin_sprout.png").convert_alpha(), (50,50)),
-    "grown_pumpkin" : pygame.transform.scale(pygame.image.load("images/pumpkin.png").convert_alpha(), (50,50)),
-    "dead_pumpkin" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (50,50)),
-    "baby_wheat" : pygame.transform.scale(pygame.image.load("images/best_wheat.png").convert_alpha(), (50,50)),
-    "grown_wheat" : pygame.transform.scale(pygame.image.load("images/wheat.png").convert_alpha(), (50,50)),
-    "dead_wheat" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (50,50)),
+    "baby_pumpkin" : pygame.transform.scale(pygame.image.load("images/Crops/pum1.png").convert_alpha(), (50,50)),
+    "grown_pumpkin" : pygame.transform.scale(pygame.image.load("images/Crops/pum2.png").convert_alpha(), (50,50)),
+    "dead_pumpkin" : pygame.transform.scale(pygame.image.load("images/Crops/pum3.png").convert_alpha(), (50,50)),
+
+    "baby_wheat" : pygame.transform.scale(pygame.image.load("images/Crops/wheat1.png").convert_alpha(), (50,50)),
+    "grown_wheat" : pygame.transform.scale(pygame.image.load("images/Crops/wheat2.png").convert_alpha(), (50,50)),
+    "dead_wheat" : pygame.transform.scale(pygame.image.load("images/Crops/wheat3.png").convert_alpha(), (50,50)),
+
+    "baby_carrot" : pygame.transform.scale(pygame.image.load("images/Crops/car1.png").convert_alpha(), (50,50)),
+    "grown_carrot" : pygame.transform.scale(pygame.image.load("images/Crops/car2.png").convert_alpha(), (50,50)),
+    "dead_carrot" : pygame.transform.scale(pygame.image.load("images/Crops/car3.png").convert_alpha(), (50,50)),
+    
     "grass" : pygame.transform.scale(pygame.image.load("images/grass.png").convert_alpha(), (50,50)),
     "dirt" : pygame.transform.scale(pygame.image.load("images/dirt.png").convert_alpha(), (50,50)),
     "wet_dirt" : pygame.transform.scale(pygame.image.load("images/wet_dirt.png").convert_alpha(), (50,50)),
@@ -129,7 +135,16 @@ class PumpkinTile(CropTile):
     ):
         super().__init__("Pumpkin", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_pumpkin"], dead_image=images["dead_pumpkin"], grown_image=images["grown_pumpkin"], interact_range=100, risk=3)
 
-        
+
+class CarrotTile(CropTile):
+    def __init__(
+        self,
+        x = 0,
+        y = 0,
+    ):
+        super().__init__("Carrot", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_carrot"], dead_image=images["dead_carrot"], grown_image=images["grown_carrot"], interact_range=100, risk=3)
+
+
 class Gate(InteractableTile):
     def __init__(self,x:int,y:int,rot:int):
         super().__init__(width=200, height=10, x=x, y=y, color=(0,0,0), collision=True, interact_range=50)
