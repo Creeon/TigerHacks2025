@@ -128,7 +128,7 @@ class Player(pygame.sprite.Sprite):
         self.tools = []
         
         self.current_seed = 0
-        
+
         self.seeds = [
             dict({
                 "name" : "Wheat",
