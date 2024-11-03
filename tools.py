@@ -17,6 +17,8 @@ class Tool(pygame.sprite.Sprite):
         orientation = self.player.orientation
         x,y = self.player.rect.center[0], self.player.rect.center[1]
         self.image = pygame.transform.rotate(self.base_image, orientation)
+        if(orientation==180):
+            self.image = pygame.transform.flip(self.image, False, True)
         self.rect = self.image.get_rect()
         match orientation:
             case 0:
@@ -34,26 +36,20 @@ class WateringCan(Tool):
     def __init__(self, player):
         super().__init__("Watering Can", "images/watering_can.png", 50,50,player,"watering")     
         
-class Tractor(Tool):    
+class Hose(Tool):
     def __init__(self, player):
-        super().__init__("Tractor", "images/tractor.png", 500, 500, player, "tilling")
-        self.speed_mod=5
-        
+        super().__init__("Hose", "images/hose.png", 150,150, player,"watering") 
+        self.speed_mod=1.5
+    
 class WaterPlane(Tool):    
     def __init__(self, player):
-        super().__init__("Water Plane", "images/water_plane.png", 500, 500, player, "watering")
+        super().__init__("Water Plane", "images/water_plane.png", 400, 400, player, "watering")
+        self.speed_mod = 3
         
-class Shovel(Tool):
+class Tractor(Tool):    
     def __init__(self, player):
-        super().__init__("Shovel", "images/shovel.png", 100, 50, player, "planting")
-        
-class Sickle(Tool):
-    def __init__(self, player):
-        super().__init__("Sickle", "images/sickle.png", 100, 50, player, "harvesting")
-        
-class FertilizingMachine(Tool):
-    def __init__(self,player):
-        super().__init__("Machine", "images/machine.png", 500,500,player,"fertilizing")
+        super().__init__("Tractor", "images/tractor.png", 400, 400, player, "tilling")
+        self.speed_mod=3
         
 class Hoe(Tool):
     def __init__(self, player):
@@ -61,5 +57,44 @@ class Hoe(Tool):
         
 class GardenFork(Tool):
     def __init__(self, player):
-        super().__init__("Garden Fork", "images/garden_fork.png", 150,75, player, "tilling")
-        self.speed_mod=1.25
+        super().__init__("Garden Fork", "images/garden_fork.png", 175,100, player, "tilling")
+        self.speed_mod=1.5
+        
+class Shovel(Tool):
+    def __init__(self, player):
+        super().__init__("Shovel", "images/shovel.png", 75, 40, player, "planting")
+        
+class Plow(Tool):
+    def __init__(self, player):
+        super().__init__("Shovel", "images/shovel.png", 150, 80, player, "planting")
+        
+class Ox(Tool):
+    def __init__(self, player):
+        super().__init__("Ox", "images/Ox.png", 300, 150, player, "planting")
+        self.speed_mod=2.5
+        
+class Sickle(Tool):
+    def __init__(self, player):
+        super().__init__("Sickle", "images/sickle.png", 100, 50, player, "harvesting")
+        
+class Scythe(Tool):
+    def __init__(self, player):
+        super().__init__("Scythe", "images/scythe.png", 200, 100, player, "harvesting")
+        
+class Combine(Tool):
+    def __init__(self, player):
+        super().__init__("Combine", "images/Combine.png", 400, 400, player, "harvesting")
+        self.speed_mod=3
+        
+class FertilizingMachine(Tool):
+    def __init__(self,player):
+        super().__init__("Machine", "images/machine.png", 400,400,player,"fertilizing")
+        
+class Sprayer(Tool):
+    def __init__(self, player):
+        super().__init__("Sprayer", "images/sprayer.png", 50,50, player, "fertilizing")
+        
+class FertilizationSpray(Tool):
+    def __init__(self, player):
+        super().__init__("Spray", "images/spray_bottle.png", 50,50, player, "fertilizing")
+        
