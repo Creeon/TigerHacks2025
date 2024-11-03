@@ -302,8 +302,6 @@ def seedShop():
 def toolsShop():
     print("Tool shop!")
 
-    print("Seed shop!")
-    
     while True:
         tools_mouse_pos = pygame.mouse.get_pos()
 
