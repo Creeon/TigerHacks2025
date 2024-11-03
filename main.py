@@ -265,7 +265,23 @@ def shopMenuShow():
             button.changeColor(menu_mouse_pos)
             button.update(shopMenu.screen)
     
-        #pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                keys_pressed.append(event.key)
+                if event.key == pygame.K_x:
+                    shopMenu.menu_quit=True
+            if event.type == pygame.KEYUP:
+                keys_pressed.remove(event.key)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if shopMenu.seed_button.checkForInput(pygame.mouse.get_pos()):
+                    #Do something
+                    pass
+                if shopMenu.seed_button.checkForInput(pygame.mouse.get_pos()):
+                    #Do something
+                    pass
+                
+
+        pygame.display.update()
 
     #If quit is true, then the menu must already be open -- so close it!
     print("Close shop menu!")
@@ -332,6 +348,8 @@ def day_change():
             if isinstance(tile, CropTile):
                 tile.iterate()
 
+shopping = False
+
 while not quit:
     # Process player inputs.
     for event in pygame.event.get():
@@ -369,51 +387,51 @@ while not quit:
             keys_pressed.remove(event.key)
             if event.key == pygame.K_k:
                 tool.hidden=True
-
-    screen.fill((6,64,43))  # Fill the display with a solid color
-    
-    player_speed = getSpeed(keys_pressed, 10)
-    
-    for layer in layers:
-        for tile in layer:
-            if (not type(tile) == Player) and tile.collision:
-                player_speed = checkCollision(player.rect, tile.rect, player_speed)
-            if not tool.hidden:
-                if isinstance(tile, CropTile):
-                    if tile.rect.colliderect(tool.rect):
-                        tile.interact(inventory)
-    i = 0
-    for layer in layers:
-        if not i == 3:
-            layer.update([-player_speed[0], -player_speed[1]])
-        i+=1
+    if not shopping:
+        screen.fill((6,64,43))  # Fill the display with a solid color
         
-    player.update(player_speed)
-    
-    #print(player_speed)
-
-    #tiles.draw(screen)
-    #screen.blit(player.image,player.rect)
-    
-    for layer in layers:
-        layer.draw(screen)
-    if not inventory.hidden:
-        inventory.draw(screen)
-    tool.update()
-    if not tool.hidden:
-        screen.blit(tool.image, tool.rect)
+        player_speed = getSpeed(keys_pressed, 10)
         
-    screen.blit(day_writing, day_rect)
+        for layer in layers:
+            for tile in layer:
+                if (not type(tile) == Player) and tile.collision:
+                    player_speed = checkCollision(player.rect, tile.rect, player_speed)
+                if not tool.hidden:
+                    if isinstance(tile, CropTile):
+                        if tile.rect.colliderect(tool.rect):
+                            tile.interact(inventory)
+        i = 0
+        for layer in layers:
+            if not i == 3:
+                layer.update([-player_speed[0], -player_speed[1]])
+            i+=1
+            
+        player.update(player_speed)
         
-    if not menu.hidden:
-        screen.blit(menu.image, menu.rect)
+        #print(player_speed)
 
+        #tiles.draw(screen)
+        #screen.blit(player.image,player.rect)
         
+        for layer in layers:
+            layer.draw(screen)
+        if not inventory.hidden:
+            inventory.draw(screen)
+        tool.update()
+        if not tool.hidden:
+            screen.blit(tool.image, tool.rect)
+            
+        screen.blit(day_writing, day_rect)
+            
+        if not menu.hidden:
+            screen.blit(menu.image, menu.rect)
 
-    pygame.display.flip()  # Refresh on-screen display
-    delays.append(time.time() - last)
-    #print(1 / (sum(delays) / len(delays)))
-    if len(delays) > 60:
-        delays.pop(0)
-    last = time.time()
-    clock.tick(max_frames)
+            
+
+        pygame.display.flip()  # Refresh on-screen display
+        delays.append(time.time() - last)
+        #print(1 / (sum(delays) / len(delays)))
+        if len(delays) > 60:
+            delays.pop(0)
+        last = time.time()
+        clock.tick(max_frames)
