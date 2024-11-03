@@ -13,7 +13,7 @@ images = dict({
     "dead_carrot" : pygame.transform.scale(pygame.image.load("images/Crops/car3.png").convert_alpha(), (50,50)),
     "baby_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelon1.png").convert_alpha(), (50,50)),
     "grown_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelon2.png").convert_alpha(), (50,50)),
-    "dead_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelono3.png").convert_alpha(), (50,50)),
+    "dead_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelon3.png").convert_alpha(), (50,50)),
     "grass" : pygame.transform.scale(pygame.image.load("images/grass.png").convert_alpha(), (50,50)),
     "dirt" : pygame.transform.scale(pygame.image.load("images/dirt.png").convert_alpha(), (50,50)),
     "wet_dirt" : pygame.transform.scale(pygame.image.load("images/wet_dirt.png").convert_alpha(), (50,50)),
