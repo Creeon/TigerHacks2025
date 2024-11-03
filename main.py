@@ -24,6 +24,7 @@ item_images = dict({
     "grass" : "images/grass.png",
     "Pumpkin" : "images/pumpkin.png",
     "Carrot" : "images/Crops/harvested_car.png",
+    "Watermelon" : "images/Crops/harvested_watermelon.png",
     "fertilizer" : "images/fertilizer.png"
 })
 
@@ -137,6 +138,10 @@ class Player(pygame.sprite.Sprite):
             }),
             dict({
                 "name" : "Pumpkin",
+                "count" : 100
+            }),
+                        dict({
+                "name" : "Watermelon",
                 "count" : 100
             }),
             dict({
