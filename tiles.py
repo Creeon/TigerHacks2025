@@ -14,6 +14,9 @@ images = dict({
     "baby_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelon1.png").convert_alpha(), (50,50)),
     "grown_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelon2.png").convert_alpha(), (50,50)),
     "dead_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelon3.png").convert_alpha(), (50,50)),
+    "baby_corn" : pygame.transform.scale(pygame.image.load("images/Crops/corn1.png").convert_alpha(), (50,50)),
+    "grown_corn" : pygame.transform.scale(pygame.image.load("images/Crops/corn2.png").convert_alpha(), (50,50)),
+    "dead_corn" : pygame.transform.scale(pygame.image.load("images/Crops/corn3.png").convert_alpha(), (50,50)),    
     "grass" : pygame.transform.scale(pygame.image.load("images/grass.png").convert_alpha(), (50,50)),
     "dirt" : pygame.transform.scale(pygame.image.load("images/dirt.png").convert_alpha(), (50,50)),
     "wet_dirt" : pygame.transform.scale(pygame.image.load("images/wet_dirt.png").convert_alpha(), (50,50)),
@@ -150,7 +153,15 @@ class WatermelonTile(CropTile):
         y = 0,
     ):
         super().__init__("Watermelon", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_watermelon"], dead_image=images["dead_watermelon"], grown_image=images["grown_watermelon"], interact_range=100, risk=3)
-        
+
+class CornTile(CropTile):
+    def __init__(
+        self,
+        x = 0,
+        y = 0,
+    ):
+        super().__init__("Corn", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_corn"], dead_image=images["dead_corn"], grown_image=images["grown_corn"], interact_range=100, risk=3)
+
 class Gate(InteractableTile):
     def __init__(self,x:int,y:int,rot:int):
         super().__init__(width=200, height=10, x=x, y=y, color=(0,0,0), collision=True, interact_range=50)

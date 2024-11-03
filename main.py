@@ -197,6 +197,10 @@ class Player(pygame.sprite.Sprite):
             dict({
                 "name" : "Watermelon",
                 "count" : 1000
+            }),
+            dict({
+                "name" : "Corn",
+                "count" : 1000
             })
         ]
         
