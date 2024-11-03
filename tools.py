@@ -54,3 +54,12 @@ class Sickle(Tool):
 class FertilizingMachine(Tool):
     def __init__(self,player):
         super().__init__("Machine", "images/machine.png", 500,500,player,"fertilizing")
+        
+class Hoe(Tool):
+    def __init__(self, player):
+        super().__init__("Hoe", "images/hoe.png", 100, 50, player, "tilling")
+        
+class GardenFork(Tool):
+    def __init__(self, player):
+        super().__init__("Garden Fork", "images/garden_fork.png", 150,75, player, "tilling")
+        self.speed_mod=1.25

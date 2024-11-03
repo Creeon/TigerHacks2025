@@ -257,8 +257,8 @@ for i in range(100):
     inventory.add_item("grass")
 inventory.add_item("fertilizer", count=100)
     
-player.tools.append(Tractor(player))
-player.tools.append(WateringCan(player))
+player.tools.append(Hoe(player))
+player.tools.append(GardenFork(player))
 player.tools.append(WaterPlane(player))
 player.tools.append(Shovel(player))
 player.tools.append(Sickle(player))
@@ -360,7 +360,7 @@ while not quit:
     if not player.current_tool == None:
         speed_mod = player.current_tool.speed_mod
     player_speed = getSpeed(keys_pressed, 10)
-    player_speed = [player_speed[0] * speed_mod, player_speed[1] * speed_mod]
+    player_speed = [int(player_speed[0] * speed_mod), int(player_speed[1] * speed_mod)]
     
     for row in map:
         for tile in row:
