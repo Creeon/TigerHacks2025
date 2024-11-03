@@ -286,6 +286,129 @@ def shopMenuShow():
 
         pygame.display.update()
 
+#*****************SHOP!!!!*****************
+#Functions to buy seeds
+def buyWheat():
+    money.money -= 15
+    #TODO: Add 10 wheat seeds to inventory
+def buyGMOWheat():
+    money.money -= 20
+    #TODO: Add 10 wheat seeds to inventory
+def buyPumpkin():
+    money.money -= 15
+    #TODO: Add 10 wheat seeds to inventory
+def buyGMOPumpkin():
+    money.money -= 20
+    #TODO: Add 10 wheat seeds to inventory
+def buyCarrot():
+    money.money -= 15
+    #TODO: Add 10 wheat seeds to inventory
+def buyGMOCarrot():
+    money.money -= 20
+    #TODO: Add 10 wheat seeds to inventory
+def buyLettuce():
+    money.money -= 15
+    #TODO: Add 10 wheat seeds to inventory
+def buyGMOLettuce():
+    money.money -= 20
+    #TODO: Add 10 wheat seeds to inventory
+def buyCorn():
+    money.money -= 15
+    #TODO: Add 10 wheat seeds to inventory
+def buyGMOCorn():
+    money.money -= 20
+    #TODO: Add 10 wheat seeds to inventory
+def buyWatermelon():
+    money.money -= 15
+    #TODO: Add 10 wheat seeds to inventory
+def buyGMOWatermelon():
+    money.money -= 20
+    #TODO: Add 10 wheat seeds to inventory
+
+#Functions to buy tools
+def buyTilling2():
+    money.money -= 1000
+    #TODO: Add 10 wheat seeds to inventory
+def buyTilling3():
+    money.money -= 10000
+    #TODO: Add 10 wheat seeds to inventory
+def buyHarvesting2():
+    money.money -= 1000
+    #TODO: Add 10 wheat seeds to inventory
+def buyHarvesting3():
+    money.money -= 10000
+    #TODO: Add 10 wheat seeds to inventory
+def buyWatering2():
+    money.money -= 1000
+    #TODO: Add 10 wheat seeds to inventory
+def buyWatering3():
+    money.money -= 10000
+    #TODO: Add 10 wheat seeds to inventory
+def buyFertlization2():
+    money.money -= 1000
+    #TODO: Add 10 wheat seeds to inventory
+def buyFertlization3():
+    money.money -= 10000
+    #TODO: Add 10 wheat seeds to inventory
+def buyPlanting2():
+    money.money -= 1000
+    #TODO: Add 10 wheat seeds to inventory
+def buyPlanting3():
+    money.money -= 1000
+    #TODO: Add 10 wheat seeds to inventory
+
+    
+class shopMenu:
+    menu_quit = True
+    screen = pygame.display.set_mode((screen_width,screen_height))
+    menu_mouse_pos = pygame.mouse.get_pos() #Get mouse position
+    seed_button = Button(image = None, pos = (0,0), text_input = None, font = get_font(100), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+    tools_button = Button(image = None, pos = (0,0), text_input = None, font = get_font(100), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+
+#Function to open and close main shop menu, initialize, etc
+
+def shopMenuShow():
+    background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (650, 700))
+    shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
+
+    shopMenu.menu_quit = not shopMenu.menu_quit
+    #While quit is false
+    print("Shop menu open!")
+    while (shopMenu.menu_quit == False):
+        #Credit for the majority of this menu structure AND Button class to Baraltech in this tutorial (https://www.youtube.com/watch?v=GMBqjxcKogA)
+        menu_mouse_pos = pygame.mouse.get_pos() #Get mouse position
+        shop_text_header = get_font(85).render("SHOP", True, (255, 255, 255))
+        shop_menu_rect = shop_text_header.get_rect(center = (screen_width // 2,(screen_height - 480)// 2))
+
+        shopMenu.seed_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (250, 180)), pos = (screen_width // 2,(screen_height - 250)// 2),
+                             text_input = "SEEDS", font = get_font(75), base_color = (0,255,0), hovering_color = (0, 0, 0))
+        shopMenu.tools_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (250, 180)), pos = (screen_width // 2,(screen_height + 250)// 2),
+                              text_input = "TOOLS", font = get_font(75), base_color = (0, 0, 255), hovering_color = (0, 0, 0))
+        
+        shopMenu.screen.blit(shop_text_header, shop_menu_rect)
+
+        for button in [shopMenu.seed_button, shopMenu.tools_button]:
+            button.changeColor(menu_mouse_pos)
+            button.update(shopMenu.screen)
+    
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                keys_pressed.append(event.key)
+                if event.key == pygame.K_x:
+                    shopMenu.menu_quit=True
+            if event.type == pygame.KEYUP:
+                keys_pressed.remove(event.key)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if shopMenu.seed_button.checkForInput(pygame.mouse.get_pos()):
+                    print("SEEDS!")
+                    seedShop()
+                if shopMenu.tools_button.checkForInput(pygame.mouse.get_pos()):
+                    print("TOOLS!")
+                    toolsShop()
+                
+
+        pygame.display.update()
+
 #Function to open seed window in shop
 def seedShop():
     print("Seed shop!")
@@ -293,26 +416,61 @@ def seedShop():
     while (shopMenu.menu_quit == False):
         seed_mouse_pos = pygame.mouse.get_pos()
 
-        background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (400, 400))
+        background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (650, 700))
         shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
 
         seed_text = get_font(48).render("SEED SHOP", True, (0, 0, 0))
-        seed_rect = seed_text.get_rect(center = (screen_width // 2,(screen_height - 300)// 2))
+        seed_rect = seed_text.get_rect(center = (screen_width // 2,(screen_height - 580)// 2))
         shopMenu.screen.blit(seed_text, seed_rect)
 
         #initialize buttons
-        seed_back = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (100, 80)), pos = (screen_width // 2, (screen_height // 2) + 120),
+        seed_back = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (140, 80)), pos = (screen_width // 2, (screen_height // 2) + 270),
                            text_input = "BACK", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        wheat_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (120, 80)), pos = ((screen_width // 2) - 65, (screen_height // 2) - 50),
-                           text_input = "WHEAT", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        gmo_wheat_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (120, 80)), pos = ((screen_width // 2) + 65, (screen_height // 2) - 50),
-                           text_input = "GMO WHEAT", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        pumpkin_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (120, 80)), pos = ((screen_width // 2) - 65, (screen_height // 2) + 50),
-                           text_input = "PUMPKIN", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        gmo_pumpkin_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (120, 80)), pos = ((screen_width // 2) + 65, (screen_height // 2) + 50),
-                           text_input = "GMO PUMPKIN", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        #SPRING 
+        carrot_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) - 230),
+                           text_input = "CARROT (15)", font = get_font(20), base_color = (0, 0, 0), hovering_color = (0, 255, 0))
+        gmo_carrot_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) - 230),
+                           text_input = "GMO CARROT (20)", font = get_font(20), base_color = (0, 0, 0), hovering_color = (0, 255, 0))
+        lettuce_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) - 140),
+                           text_input = "LETTUCE (15)", font = get_font(20), base_color = (0, 0, 0), hovering_color = (0, 255, 0))
+        gmo_lettuce_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (170, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) - 140),
+                           text_input = "GMO LETTUCE (20)", font = get_font(20), base_color = (0, 0, 0), hovering_color = (0, 255, 0))
+        #SUMMER
+        corn_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) - 50),
+                           text_input = "CORN (15)", font = get_font(20), base_color = (0, 0, 0), hovering_color = (0, 255, 0))
+        gmo_corn_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) - 50),
+                           text_input = "GMO CORN (20)", font = get_font(20), base_color = (0, 0, 0), hovering_color = (0, 255, 0))
+        watermelon_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) + 40),
+                           text_input = "WATERMELON (15)", font = get_font(20), base_color = (0, 0, 0), hovering_color = (0, 255, 0))
+        gmo_watermelon_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) + 40),
+                           text_input = "GMO WATERMELON (20)", font = get_font(20), base_color = (0, 0, 0), hovering_color = (0, 255, 0))
+        #FALL
+        wheat_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) + 130),
+                           text_input = "WHEAT (15)", font = get_font(20), base_color = (0, 0, 0), hovering_color = (0, 255, 0))
+        gmo_wheat_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) + 130),
+                           text_input = "GMO WHEAT (20)", font = get_font(20), base_color = (0, 0, 0), hovering_color = (0, 255, 0))
+        pumpkin_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) + 220),
+                           text_input = "PUMPKIN (15)", font = get_font(20), base_color = (0, 0, 0), hovering_color = (0, 255, 0))
+        gmo_pumpkin_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) + 220),
+                           text_input = "GMO PUMPKIN (20)", font = get_font(20), base_color = (0, 0, 0), hovering_color = (0, 255, 0))
 
         #Display Buttons
+        carrot_button.changeColor(seed_mouse_pos)
+        carrot_button.update(shopMenu.screen)
+        gmo_carrot_button.changeColor(seed_mouse_pos)
+        gmo_carrot_button.update(shopMenu.screen)
+        lettuce_button.changeColor(seed_mouse_pos)
+        lettuce_button.update(shopMenu.screen)
+        gmo_lettuce_button.changeColor(seed_mouse_pos)
+        gmo_lettuce_button.update(shopMenu.screen)
+        corn_button.changeColor(seed_mouse_pos)
+        corn_button.update(shopMenu.screen)
+        gmo_corn_button.changeColor(seed_mouse_pos)
+        gmo_corn_button.update(shopMenu.screen)
+        watermelon_button.changeColor(seed_mouse_pos)
+        watermelon_button.update(shopMenu.screen)
+        gmo_watermelon_button.changeColor(seed_mouse_pos)
+        gmo_watermelon_button.update(shopMenu.screen)
         seed_back.changeColor(seed_mouse_pos)
         seed_back.update(shopMenu.screen)
         wheat_button.changeColor(seed_mouse_pos)
@@ -324,6 +482,7 @@ def seedShop():
         gmo_pumpkin_button.changeColor(seed_mouse_pos)
         gmo_pumpkin_button.update(shopMenu.screen)
 
+        #TODO: MAKE SURE MONEY CANNOT GO NEGATIVE!
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -340,25 +499,55 @@ def seedShop():
                     shopMenuShow()
                 if wheat_button.checkForInput(pygame.mouse.get_pos()):
                     print("WHEAT!")
-                    if (Player.coins > 0):
-                        pass
+                    if (money.money > 0):
+                        buyWheat()
                 if gmo_wheat_button.checkForInput(pygame.mouse.get_pos()):
                     print("GMO WHEAT!")
-                    if (Player.coins > 0):
-                        pass
+                    if (money.money> 0):
+                        buyGMOWheat()
                 if pumpkin_button.checkForInput(pygame.mouse.get_pos()):
                     print("PUMPKIN!")
-                    if (Player.coins > 0):
-                        pass
+                    if (money.money > 0):
+                        buyPumpkin()
                 if gmo_pumpkin_button.checkForInput(pygame.mouse.get_pos()):
                     print("GMO PUMPKIN!")
-                    if (Player.coins > 0):
-                        pass
-
-
-    
-
+                    if (money.money > 0):
+                        buyGMOPumpkin()
+                if carrot_button.checkForInput(pygame.mouse.get_pos()):
+                    print("CARROT!")
+                    if (money.money > 0):
+                        buyCarrot()
+                if gmo_carrot_button.checkForInput(pygame.mouse.get_pos()):
+                    print("GMO CARROT!")
+                    if (money.money > 0):
+                        buyGMOPumpkin()
+                if lettuce_button.checkForInput(pygame.mouse.get_pos()):
+                    print("LETTUCE!")
+                    if (money.money > 0):
+                        buyLettuce()
+                if gmo_lettuce_button.checkForInput(pygame.mouse.get_pos()):
+                    print("GMO LETTUCE!")
+                    if (money.money > 0):
+                        buyGMOLettuce()
+                if corn_button.checkForInput(pygame.mouse.get_pos()):
+                    print("CORN!")
+                    if (money.money > 0):
+                        buyCorn()
+                if gmo_corn_button.checkForInput(pygame.mouse.get_pos()):
+                    print("GMO CORN!")
+                    if (money.money > 0):
+                        buyGMOCorn()
+                if watermelon_button.checkForInput(pygame.mouse.get_pos()):
+                    print("WATERMELON!")
+                    if (money.money > 0):
+                        buyWatermelon()
+                if gmo_watermelon_button.checkForInput(pygame.mouse.get_pos()):
+                    print("GMO WATERMELON!")
+                    if (money.money > 0):
+                        buyGMOWatermelon()
+                
         pygame.display.update()
+        money.draw(screen)
 
 
 #Function to open tool window in shop
@@ -368,35 +557,66 @@ def toolsShop():
     while (shopMenu.menu_quit == False):
         tools_mouse_pos = pygame.mouse.get_pos()
 
-        background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (400, 400))
+        background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (650, 700))
         shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
 
         tools_text = get_font(48).render("TOOL SHOP", True, (0, 0, 0))
-        tools_rect = tools_text.get_rect(center = (screen_width // 2,(screen_height - 300)// 2))
+        tools_rect = tools_text.get_rect(center = (screen_width // 2,(screen_height - 580)// 2))
         shopMenu.screen.blit(tools_text, tools_rect)
 
-        tools_back = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (100, 80)), pos = (screen_width // 2, (screen_height // 2) + 120),
+        tools_back = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (140, 80)), pos = (screen_width // 2, (screen_height // 2) + 270),
                            text_input = "BACK", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        tool1_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 80)), pos = ((screen_width // 2) - 50, (screen_height // 2) - 50),
-                           text_input = "TOOL1", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        tool2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 80)), pos = ((screen_width // 2) + 50, (screen_height // 2) - 50),
-                           text_input = "TOOL2", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        tool3_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 80)), pos = ((screen_width // 2) - 50, (screen_height // 2) + 50),
-                           text_input = "TOOL3", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        tool4_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 80)), pos = ((screen_width // 2) + 50, (screen_height // 2) + 50),
-                           text_input = "TOOL4", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        
+        tilling2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) - 200),
+                           text_input = "HOE (1000)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        tilling3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) - 200),
+                           text_input = "WATER PLANE (10000)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        
+        harvesting2_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) - 100),
+                           text_input = "SCYTHE (1000)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        harvesting3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) - 100),
+                           text_input = "COMBINE (10000)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        
+        watering2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) - 0),
+                           text_input = "HOSE (1000)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        watering3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) - 0),
+                           text_input = "WATERPLANE (10000)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        
+        fertilization2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) + 100),
+                           text_input = "SPRAYER (1000)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        fertilization3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) + 100),
+                           text_input = "FERT MACHINE (10000)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        
+        planting2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) + 200),
+                           text_input = "TRACTOR (1000)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        planting3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) + 200),
+                           text_input = "PLANTING3 (10000)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        
         
         tools_back.changeColor(tools_mouse_pos)
         tools_back.update(shopMenu.screen)
-        tool1_button.changeColor(tools_mouse_pos)
-        tool1_button.update(shopMenu.screen)
-        tool2_button.changeColor(tools_mouse_pos)
-        tool2_button.update(shopMenu.screen)
-        tool3_button.changeColor(tools_mouse_pos)
-        tool3_button.update(shopMenu.screen)
-        tool4_button.changeColor(tools_mouse_pos)
-        tool4_button.update(shopMenu.screen)
+        tilling2_button.changeColor(tools_mouse_pos)
+        tilling2_button.update(shopMenu.screen)
+        tilling3_button.changeColor(tools_mouse_pos)
+        tilling3_button.update(shopMenu.screen)
+        harvesting2_button.changeColor(tools_mouse_pos)
+        harvesting2_button.update(shopMenu.screen)
+        harvesting3_button.changeColor(tools_mouse_pos)
+        harvesting3_button.update(shopMenu.screen)
+        watering2_button.changeColor(tools_mouse_pos)
+        watering2_button.update(shopMenu.screen)
+        watering3_button.changeColor(tools_mouse_pos)
+        watering3_button.update(shopMenu.screen)
+        fertilization2_button.changeColor(tools_mouse_pos)
+        fertilization2_button.update(shopMenu.screen)
+        fertilization3_button.changeColor(tools_mouse_pos)
+        fertilization3_button.update(shopMenu.screen)
+        planting2_button.changeColor(tools_mouse_pos)
+        planting2_button.update(shopMenu.screen)
+        planting3_button.changeColor(tools_mouse_pos)
+        planting3_button.update(shopMenu.screen)
 
+        #TODO: MAKE SURE MONEY CANNOT GO NEGATIVE!
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -411,24 +631,48 @@ def toolsShop():
                     print("BACK TOOLS!")
                     shopMenu.menu_quit = not shopMenu.menu_quit
                     shopMenuShow()
-                if tool1_button.checkForInput(pygame.mouse.get_pos()):
+                if  tilling2_button.checkForInput(pygame.mouse.get_pos()): #tilling, harvesting, watering, fertilization, planting
                     #TODO: If player does not already have:
                     print("TOOL1!")
-                    #TODO: Function to add tool to inventory
-                if tool2_button.checkForInput(pygame.mouse.get_pos()):
+                    buyTilling2()
+                if tilling3_button.checkForInput(pygame.mouse.get_pos()):
                     #TODO: If player does not already have:
                     print("TOOL2!")
-                    #TODO: Function to add tool to inventory
-                if tool3_button.checkForInput(pygame.mouse.get_pos()):
+                    buyTilling3()
+                if harvesting2_button.checkForInput(pygame.mouse.get_pos()):
                     #TODO: If player does not already have:
                     print("TOOL3!")
-                    #TODO: Function to add tool to inventory
-                if tool4_button.checkForInput(pygame.mouse.get_pos()):
+                    buyHarvesting2()
+                if harvesting3_button.checkForInput(pygame.mouse.get_pos()):
                     #TODO: If player does not already have:
                     print("TOOL4!")
-                    #TODO: Function to add tool to inventory
-
+                    buyHarvesting3()
+                if watering2_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL4!")
+                    buyWatering2()
+                if watering3_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL4!")
+                    buyWatering3()
+                if fertilization2_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL4!")
+                    buyFertlization2()
+                if fertilization3_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL4!")
+                    buyFertlization3()
+                if planting2_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL4!")
+                    buyPlanting2()
+                if planting3_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL4!")
+                    buyPlanting3()
         pygame.display.update()
+        money.draw(screen)
         
 def getSpeed(keys, speed):
     target_speed = [0,0,0,0] #+x -x +y -y
