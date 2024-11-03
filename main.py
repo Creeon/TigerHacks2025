@@ -25,7 +25,8 @@ item_images = dict({
     "grass" : "images/grass.png",
     "Pumpkin" : "images/Crops/pum2.png",
     "Carrot" : "images/Crops/car2.png",
-    "fertilizer" : "images/fertilizer.png"
+    "fertilizer" : "images/fertilizer.png",
+    "Watermelon" : "images/Crops/watermelon2.png"
 })
 
 tiles = dict({
@@ -191,6 +192,10 @@ class Player(pygame.sprite.Sprite):
             }),
             dict({
                 "name" : "Carrot",
+                "count" : 1000
+            }),
+            dict({
+                "name" : "Watermelon",
                 "count" : 1000
             })
         ]
@@ -623,6 +628,8 @@ while not quit:
                                             tile.crop=WheatTile(tile.rect.center[0], tile.rect.center[1])
                                         case "Carrot":
                                             tile.crop=CarrotTile(tile.rect.center[0], tile.rect.center[1])
+                                        case "Watermelon":
+                                            tile.crop=WatermelonTile(tile.rect.center[0], tile.rect.center[1])
                         elif player.current_tool.type == "harvesting":
                             if (not tile.crop==None) and (tile.crop.dead or tile.crop.grown):
                                 tile.crop.interact(money)
