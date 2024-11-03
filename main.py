@@ -21,11 +21,10 @@ from misc import *
 from button import *
 
 item_images = dict({
-    "Wheat" : "images/best_wheat.png",
+    "Wheat" : "images/Crops/wheat2.png",
     "grass" : "images/grass.png",
-    "Pumpkin" : "images/pumpkin.png",
-    "Carrot" : "images/Crops/harvested_car.png",
-    "Watermelon" : "images/Crops/harvested_watermelon.png",
+    "Pumpkin" : "images/Crops/pum2.png",
+    "Carrot" : "images/Crops/car2.png",
     "fertilizer" : "images/fertilizer.png"
 })
 
@@ -466,12 +465,17 @@ for i in range(100):
     inventory.add_item("grass")
 inventory.add_item("fertilizer", count=100)
     
-player.tools.append(Hoe(player))
-player.tools.append(GardenFork(player))
-player.tools.append(WaterPlane(player))
-player.tools.append(Shovel(player))
-player.tools.append(Sickle(player))
+player.tools.append(Ox(player))
+player.tools.append(Scythe(player))
+player.tools.append(Hose(player))
+player.tools.append(Sprayer(player))
+player.tools.append(Tractor(player))
+player.tools.append(Combine(player))
+player.tools.append(Plow(player))
 player.tools.append(FertilizingMachine(player))
+player.tools.append(FertilizingMachine(player))
+
+
 
 menu = Menu(background_image="images/angry.jpg")
 day_font = pygame.font.Font(None, 48)
@@ -539,6 +543,18 @@ while not quit:
                 case pygame.K_6:
                     if len(player.tools) >= 6:
                         player.current_tool = player.tools[5]
+                case pygame.K_7:
+                    if len(player.tools) >= 7:
+                        player.current_tool = player.tools[6]
+                case pygame.K_8:
+                    if len(player.tools) >= 8:
+                        player.current_tool = player.tools[7]
+                case pygame.K_9:
+                    if len(player.tools) >= 9:
+                        player.current_tool = player.tools[8]
+                case pygame.K_0:
+                    if len(player.tools) >= 10:
+                        player.current_tool = player.tools[9]
                 case pygame.K_LEFT:
                     player.current_seed-=1
                     if player.current_seed<0:
@@ -633,8 +649,7 @@ while not quit:
         for tile in row:
             if not tile == None:
                 tile.display(screen)
-    if not inventory.hidden:
-        inventory.draw(screen)
+    
         
     screen.blit(house.image,house.rect)
         
@@ -652,6 +667,9 @@ while not quit:
         screen.blit(menu.image, menu.rect)
 
     money.draw(screen)
+    
+    if not inventory.hidden:
+        inventory.draw(screen)
         
 
     pygame.display.flip()  # Refresh on-screen display
