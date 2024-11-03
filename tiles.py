@@ -154,12 +154,6 @@ class WatermelonTile(CropTile):
         x = 0,
         y = 0,
     ):
-        
-
-
-
-
-        
         super().__init__("Watermelon", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_watermelon"], dead_image=images["dead_watermelon"], grown_image=images["grown_watermelon"], interact_range=100, risk=3)
         
 class Gate(InteractableTile):
