@@ -33,6 +33,9 @@ player_walk = dict({
     "Idle" : "images/Idle.png"
 })
 
+def get_font(size):
+    return pygame.font.Font(None, size)
+
 def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect, movement):
     if moving_rect.colliderect(static_rect):
         return movement
@@ -213,6 +216,7 @@ class shopMenu:
     tools_button = Button(image = None, pos = (0,0), text_input = None, font = get_font(100), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
 
 #Function to open and close main shop menu, initialize, etc
+
 def shopMenuShow():
     background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (400, 400))
     shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
@@ -310,19 +314,19 @@ def seedShop():
                 if wheat_button.checkForInput(pygame.mouse.get_pos()):
                     print("WHEAT!")
                     if (Player.coins > 0):
-                        buyWheat()
+                        pass
                 if gmo_wheat_button.checkForInput(pygame.mouse.get_pos()):
                     print("GMO WHEAT!")
                     if (Player.coins > 0):
-                        buyGMOWheat()
+                        pass
                 if pumpkin_button.checkForInput(pygame.mouse.get_pos()):
                     print("PUMPKIN!")
                     if (Player.coins > 0):
-                        buyPumpkin()
+                        pass
                 if gmo_pumpkin_button.checkForInput(pygame.mouse.get_pos()):
                     print("GMO PUMPKIN!")
                     if (Player.coins > 0):
-                        buyGMOPumpkin()
+                        pass
 
 
     
@@ -542,7 +546,9 @@ while not quit:
                         "image" : pygame.transform.scale(pygame.image.load(item_images[player.seeds[player.current_seed]["name"]]).convert_alpha(), (25,25)),
                         "count" : player.seeds[player.current_seed]["count"],
                         "visual_count" : inventory.font.render(str(player.seeds[player.current_seed]["count"]), True, (255,255,255))
-                    })                
+                    })
+                case pygame.K_x:
+                    shopMenuShow()
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
             match event.key:
