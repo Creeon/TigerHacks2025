@@ -29,11 +29,11 @@ item_images = dict({
     "Watermelon" : "images/Crops/watermelon2.png"
 })
 
-tiles = dict({
-    "Spring" : None,
-    "Summer" : None,
-    "Fall" : None,
-    "Winter" : None
+grass_images = dict({
+    "Spring" : pygame.transform.scale(pygame.image.load("images/HomeGrown/grass_tile_spring.png").convert_alpha(), (50,50)),
+    "Summer" : pygame.transform.scale(pygame.image.load("images/HomeGrown/grass_tile_summer.png").convert_alpha(), (50,50)),
+    "Fall" : pygame.transform.scale(pygame.image.load("images/HomeGrown/grass_tile_fall.png").convert_alpha(), (50,50)),
+    "Winter" : pygame.transform.scale(pygame.image.load("images/HomeGrown/grass_tile_winter.png").convert_alpha(), (50,50))
 })
 
 
@@ -123,14 +123,18 @@ class Calendar():
             if self.current_index>=len(self.months):
                 self.current_index=0
             self.current_month=self.months[self.current_index]
-            match self.current_month:
-                case "Spring":
-                    for row in map:
-                        for tile in row:
-                            if isinstance(tile, GroundTile):
-                                pass
+            for row in map:
+                for tile in row:
+                    if isinstance(tile, GroundTile):
+                        tile.default_image = grass_images[self.current_month]
         self.writing = self.font.render(self.current_month + " " + str(self.current_day), True, (0,0,0))
         self.rect = self.writing.get_rect(center=(screen_width-100, 50))
+        for row in map:
+            for tile in row:
+                if isinstance(tile, GroundTile):
+                    if not tile.crop == None:
+                        tile.crop.iterate(tile.getRisk(), self.current_month)
+                    tile.iterate()
     
     def display(self, screen):
         screen.blit(self.writing,self.rect)
@@ -479,15 +483,11 @@ for i in range(100):
     inventory.add_item("grass")
 inventory.add_item("fertilizer", count=100)
     
-player.tools.append(Ox(player))
-player.tools.append(Scythe(player))
-player.tools.append(Hose(player))
-player.tools.append(Sprayer(player))
-player.tools.append(Tractor(player))
-player.tools.append(Combine(player))
-player.tools.append(Plow(player))
-player.tools.append(FertilizingMachine(player))
-player.tools.append(FertilizingMachine(player))
+player.tools.append(Hoe(player))
+player.tools.append(WateringCan(player))
+player.tools.append(Shovel(player))
+player.tools.append(FertilizationSpray(player))
+player.tools.append(Sickle(player))
 
 
 
@@ -502,15 +502,11 @@ money = Money()
 
 calendar = Calendar()
 
+christmas_tiger = ChristmasTiger(800,400)
+
 def day_change():
     global player, map, calendar
     calendar.iterate()
-    for row in map:
-        for tile in row:
-            if isinstance(tile, GroundTile):
-                if not tile.crop == None:
-                    tile.crop.iterate(tile.getRisk())
-                tile.iterate()
 
 
 
@@ -539,6 +535,8 @@ while not quit:
                 case pygame.K_e:
                     if(checkRange(player.rect,house.rect,house.interact_range)):
                         day_change()
+                    elif(calendar.current_month=="Winter" and checkRange(player.rect,christmas_tiger.rect,christmas_tiger.interact_range)):
+                        christmas_tiger.interact(money)
                 case pygame.K_1:
                     if len(player.tools) >= 1:
                         player.current_tool = player.tools[0]
@@ -651,7 +649,8 @@ while not quit:
             if not tile == None:
                 tile.update([-player_speed[0], -player_speed[1]])
         
-    house.update([-player_speed[0], -player_speed[1]])        
+    house.update([-player_speed[0], -player_speed[1]])   
+    christmas_tiger.update([-player_speed[0], -player_speed[1]])    
         
     player.update(player_speed)
 
@@ -673,6 +672,9 @@ while not quit:
     
     if not player.current_tool == None:
         player.current_tool.update()
+        
+    if calendar.current_month=="Winter":
+        screen.blit(christmas_tiger.image, christmas_tiger.rect)
     
     if (not player.current_tool == None) and not player.current_tool.hidden:
         screen.blit(player.current_tool.image, player.current_tool.rect)
@@ -686,6 +688,7 @@ while not quit:
     
     if not inventory.hidden:
         inventory.draw(screen)
+        
         
 
     pygame.display.flip()  # Refresh on-screen display
