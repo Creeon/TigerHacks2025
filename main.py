@@ -32,6 +32,8 @@ item_images = dict({
     "GMO_Carrot" : "images/Crops/car2.png",
     "GMO_Watermelon" : "images/Crops/watermelon2.png",
     "GMO_Corn" : "images/Crops/corn2.png",
+    "Lettuce" : "images/Crops/watermelon2.png",
+    "GMO_Lettuce" : "images/Crops/watermelon2.png",
     "fertilizer" : "images/fertilizer.png",
     "grass" : "images/grass.png"
 })
@@ -199,45 +201,53 @@ class Player(pygame.sprite.Sprite):
 
         self.seeds = [
             dict({
-                "name" : "Wheat",
-                "count" : 1000
-            }),
-            dict({
-                "name" : "Pumpkin",
-                "count" : 1000
-            }),
-            dict({
                 "name" : "Carrot",
-                "count" : 1000
+                "count" : 10
             }),
             dict({
-                "name" : "Watermelon",
-                "count" : 1000
+                "name" : "Lettuce",
+                "count" : 10
             }),
             dict({
                 "name" : "Corn",
-                "count" : 1000
+                "count" : 10
             }),
             dict({
-                "name" : "GMO_Wheat",
-                "count" : 1000
+                "name" : "Watermelon",
+                "count" : 10
             }),
             dict({
-                "name" : "GMO_Pumpkin",
-                "count" : 1000
+                "name" : "Wheat",
+                "count" : 10
+            }),
+            dict({
+                "name" : "Pumpkin",
+                "count" : 10
             }),
             dict({
                 "name" : "GMO_Carrot",
-                "count" : 1000
+                "count" : 0
             }),
             dict({
-                "name" : "GMO_Watermelon",
-                "count" : 1000
+                "name" : "GMO_Lettuce",
+                "count" : 0
             }),
             dict({
                 "name" : "GMO_Corn",
-                "count" : 1000
+                "count" : 0
             }),
+            dict({
+                "name" : "GMO_Watermelon",
+                "count" : 0
+            }),
+            dict({
+                "name" : "GMO_Wheat",
+                "count" : 0
+            }),
+            dict({
+                "name" : "GMO_Pumpkin",
+                "count" : 0
+            })
         ]
         
     def increase_seeds(self, seed, count):
@@ -366,54 +376,54 @@ def buyGMOWatermelon():
 
 #Functions to buy tools
 def buyTilling2():
-    if money.money >= 500:
-        money.money -= 500
+    if money.money >= 250:
+        money.money -= 250
         player.tools[0]=GardenFork(player)
     #TODO: Add 10 wheat seeds to inventory
 def buyTilling3():
-    if money.money >= 2500:
-        money.money -= 2500
+    if money.money >= 500:
+        money.money -= 500
         player.tools[0]=Tractor(player)
     #TODO: Add 10 wheat seeds to inventory
 def buyHarvesting2():
-    if money.money >= 500:
-        money.money -= 500
+    if money.money >= 250:
+        money.money -= 250
         player.tools[4]=Scythe(player)
     #TODO: Add 10 wheat seeds to inventory
 def buyHarvesting3():
-    if money.money >= 2500:
-        money.money -= 2500
+    if money.money >= 500:
+        money.money -= 500
         player.tools[4]=Combine(player)
     #TODO: Add 10 wheat seeds to inventory
 def buyWatering2():
-    if money.money >= 500:
-        money.money -= 500
+    if money.money >= 250:
+        money.money -= 250
         player.tools[1]=Hose(player)
     #TODO: Add 10 wheat seeds to inventory
 def buyWatering3():
-    if money.money >= 2500:
-        money.money -= 2500
+    if money.money >= 500:
+        money.money -= 500
         player.tools[1]=WaterPlane(player)
     #TODO: Add 10 wheat seeds to inventory
 def buyFertlization2():
-    if money.money >= 500:
-        money.money -= 500
+    if money.money >= 250:
+        money.money -= 250
         player.tools[3]=Sprayer(player)
     #TODO: Add 10 wheat seeds to inventory
 def buyFertlization3():
-    if money.money >= 2500:
-        money.money -= 2500
+    if money.money >= 500:
+        money.money -= 500
         player.tools[3]=FertilizingMachine(player)
     #TODO: Add 10 wheat seeds to inventory
 def buyPlanting2():
-    if money.money >= 500:
-        money.money -= 500
+    if money.money >= 250:
+        money.money -= 250
         player.tools[2]=Plow(player)
     #TODO: Add 10 wheat seeds to inventory
 def buyPlanting3():
-    if money.money >= 2500:
-        money.money -= 2500
-        player.tools[3]=Ox(player)
+    if money.money >= 500:
+        money.money -= 500
+        player.tools[2]=Ox(player)
     #TODO: Add 10 wheat seeds to inventory
 
     
@@ -647,29 +657,29 @@ def toolsShop():
                            text_input = "BACK", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         
         tilling2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) - 200),
-                           text_input = "HOE (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+                           text_input = "HOE (250)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         tilling3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) - 200),
-                           text_input = "TRACTOR (2500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+                           text_input = "TRACTOR (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         
-        harvesting2_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) - 100),
-                           text_input = "SCYTHE (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        harvesting3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) - 100),
-                           text_input = "COMBINE (2500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        watering2_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) - 100),
+                           text_input = "HOSE (250)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        watering3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) - 100),
+                           text_input = "WATER PLANE (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         
-        watering2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) - 0),
-                           text_input = "HOSE (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        watering3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) - 0),
-                           text_input = "WATERPLANE (2500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        planting2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) - 0),
+                           text_input = "PLOW (250)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        planting3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) - 0),
+                           text_input = "OX (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         
         fertilization2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) + 100),
-                           text_input = "SPRAYER (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+                           text_input = "SPRAYER (250)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         fertilization3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) + 100),
-                           text_input = "MACHINE (2500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+                           text_input = "MACHINE (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         
-        planting2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) + 200),
-                           text_input = "PLOW (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        planting3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) + 200),
-                           text_input = "OX (2500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        harvesting2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) + 200),
+                           text_input = "FORK (250)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        harvesting3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) + 200),
+                           text_input = "COMBINE (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         
         
         tools_back.changeColor(tools_mouse_pos)
@@ -817,7 +827,7 @@ day_rect = day_writing.get_rect(center=(screen_width-100, 50))
 house = House(250,200)
 
 money = Money()
-money.money=10000
+money.money=100
 calendar = Calendar()
 
 christmas_tiger = ChristmasTiger(800,400)
@@ -959,29 +969,31 @@ while not quit:
                                             tile.crop=LettuceTile(tile.rect.center[0], tile.rect.center[1])
                                         case "GMO_Pumpkin":
                                             tile.crop=PumpkinTile(tile.rect.center[0], tile.rect.center[1])
-                                            tile.crop.risk-=10
+                                            tile.crop.risk-=5
                                             tile.crop.quality-=0.25
                                         case "GMO_Wheat":
                                             tile.crop=WheatTile(tile.rect.center[0], tile.rect.center[1])
-                                            tile.crop.risk-=10
+                                            tile.crop.risk-=5
                                             tile.crop.quality-=0.25
                                         case "GMO_Carrot":
                                             tile.crop=CarrotTile(tile.rect.center[0], tile.rect.center[1])
-                                            tile.crop.risk-=10
+                                            tile.crop.risk-=5
                                             tile.crop.quality-=0.25
                                         case "GMO_Watermelon":
                                             tile.crop=WatermelonTile(tile.rect.center[0], tile.rect.center[1])
-                                            tile.crop.risk-=10
+                                            tile.crop.risk-=5
                                             tile.crop.quality-=0.25
                                         case "GMO_Corn":
                                             tile.crop=CornTile(tile.rect.center[0], tile.rect.center[1])
-                                            tile.crop.risk-=10
+                                            tile.crop.risk-=5
                                             tile.crop.quality-=0.25
                                         case "GMO_Lettuce":
                                             tile.crop=LettuceTile(tile.rect.center[0], tile.rect.center[1])
-                                            tile.crop.risk-=10
+                                            tile.crop.risk-=5
                                             tile.crop.quality-=0.25
-                                    tile.crop.quality-=0.05*(10-tile.soil_quality)
+                                    tile.crop.quality-=0.05*(5-tile.soil_quality)
+                                    if tile.soil_quality==10:
+                                        tile.crop.risk-=5
                                     if(tile.fertilized):
                                         tile.crop.quality-=0.25
                                         tile.crop.risk-=10

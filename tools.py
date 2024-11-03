@@ -66,7 +66,7 @@ class Shovel(Tool):
         
 class Plow(Tool):
     def __init__(self, player):
-        super().__init__("Shovel", "images/shovel.png", 150, 80, player, "planting")
+        super().__init__("Plow", "images/plow.png", 150, 80, player, "planting")
         
 class Ox(Tool):
     def __init__(self, player):
