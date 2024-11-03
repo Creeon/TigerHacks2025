@@ -13,7 +13,7 @@ images = dict({
     "dead_carrot" : pygame.transform.scale(pygame.image.load("images/Crops/car3.png").convert_alpha(), (50,50)),
     "baby_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelon1.png").convert_alpha(), (50,50)),
     "grown_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelon2.png").convert_alpha(), (50,50)),
-    "dead_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelono3.png").convert_alpha(), (50,50)),
+    "dead_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelon3.png").convert_alpha(), (50,50)),
     "grass" : pygame.transform.scale(pygame.image.load("images/HomeGrown/grass_tile_spring.png").convert_alpha(), (50,50)),
     "dirt" : pygame.transform.scale(pygame.image.load("images/dirt.png").convert_alpha(), (50,50)),
     "wet_dirt" : pygame.transform.scale(pygame.image.load("images/wet_dirt.png").convert_alpha(), (50,50)),
@@ -216,3 +216,9 @@ class House(InteractableTile):
         super().__init__(500,500,x,y,image="images/house.png")
     def interact(self):
         pass
+    
+class ChristmasTiger(InteractableTile):
+    def __init__(self,x,y):
+        super().__init__(300,600,x,y,image="images/Crops/santa_tiger.png", collision=False)
+    def interact(self, money):
+        money.money+=1

@@ -479,15 +479,11 @@ for i in range(100):
     inventory.add_item("grass")
 inventory.add_item("fertilizer", count=100)
     
-player.tools.append(Ox(player))
-player.tools.append(Scythe(player))
-player.tools.append(Hose(player))
-player.tools.append(Sprayer(player))
-player.tools.append(Tractor(player))
-player.tools.append(Combine(player))
-player.tools.append(Plow(player))
-player.tools.append(FertilizingMachine(player))
-player.tools.append(FertilizingMachine(player))
+player.tools.append(Hoe(player))
+player.tools.append(WateringCan(player))
+player.tools.append(Shovel(player))
+player.tools.append(FertilizationSpray(player))
+player.tools.append(Sickle(player))
 
 
 
@@ -501,6 +497,8 @@ house = House(250,200)
 money = Money()
 
 calendar = Calendar()
+
+christmas_tiger = ChristmasTiger(800,400)
 
 def day_change():
     global player, map, calendar
@@ -533,6 +531,8 @@ while not quit:
                 case pygame.K_e:
                     if(checkRange(player.rect,house.rect,house.interact_range)):
                         day_change()
+                    elif(calendar.current_month=="Winter" and checkRange(player.rect,christmas_tiger.rect,christmas_tiger.interact_range)):
+                        christmas_tiger.interact(money)
                 case pygame.K_1:
                     if len(player.tools) >= 1:
                         player.current_tool = player.tools[0]
@@ -645,7 +645,8 @@ while not quit:
             if not tile == None:
                 tile.update([-player_speed[0], -player_speed[1]])
         
-    house.update([-player_speed[0], -player_speed[1]])        
+    house.update([-player_speed[0], -player_speed[1]])   
+    christmas_tiger.update([-player_speed[0], -player_speed[1]])    
         
     player.update(player_speed)
 
@@ -667,6 +668,9 @@ while not quit:
     
     if not player.current_tool == None:
         player.current_tool.update()
+        
+    if calendar.current_month=="Winter":
+        screen.blit(christmas_tiger.image, christmas_tiger.rect)
     
     if (not player.current_tool == None) and not player.current_tool.hidden:
         screen.blit(player.current_tool.image, player.current_tool.rect)
@@ -680,6 +684,7 @@ while not quit:
     
     if not inventory.hidden:
         inventory.draw(screen)
+        
         
 
     pygame.display.flip()  # Refresh on-screen display
