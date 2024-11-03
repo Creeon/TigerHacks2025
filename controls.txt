@@ -1,0 +1,37 @@
+Controls: 
+WASD: Movement
+K: Use tool
+1-6: Selec your tool (The tool in hand appears in the bottom left corner)
+    1: Tilling tool
+    2: Watering tool
+    3: Planting tool
+    4: Pesticide tool (1 coin per tile)
+    5: Harvesting tool
+    6: TREE DESTRUCTION TOOL :(
+Left-right: Iterate through crop list
+E: Interact
+P: ???
+Y: Toggle day fade
+X: Open/Close shop (Mouse click to navigate)
+I: Toggle inventory
+
+Volume on
+
+Inventory: Far left is the current crop selected (iterated by left and right keys.) Everything else is the amount of crop seeds you have. A crop with a + indicates 
+that it is GMO. Planting crops will decrease the amount of that type of seed you have.
+
+Shop: The shop is where you can trade gold for tool upgrades and seeds.
+
+Mechanics: 
+    Soil Quality: The quality of the soil is affected by a number of factors, including crop rotation and use of pesticides. Soil quality affects the quality and 
+    thus sell price of crops planted.
+    Crop Quality: Crop quality affects how much crops sell for. Crops planted using low soil quality, pesticides, etc will sell for less.
+    Crop Risk: This is the chance for a crop to die each day. This can be decreased by good soil quality, watering, GMOs, pesticides, and planting crops in the 
+    correct season.
+    Day cycle: Interact with your house to enter the next day. There are 30 days in a season (except winter)
+
+Objective: Make as much BANK as possible.
+    
+Description: Rustic Realms allows you to experience a microcosm of farm life in a 2D world. Make important decisions like using fertilizers, 
+pesticides, planting GMO strains, selling your crops, and rotating them throughout the seasons for optimal yield. Work your way through a tiered tool 
+system as your grow your farm and thus its scale and efficiency.
