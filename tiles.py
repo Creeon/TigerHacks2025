@@ -74,7 +74,9 @@ class CropTile(InteractableTile):
         dead_image = None,
         grown_image = None,
         interact_range = 50,
-        risk = 0
+        risk = 0,
+        cost=10,
+        quality=1
     ):
         super().__init__(width=width, height=height, x=x, y=y, color=color, collision=collision, image=image, interact_range=interact_range, image_loaded=True)
         self.crop_name = crop_name
@@ -86,10 +88,13 @@ class CropTile(InteractableTile):
         self.grown = False
         self.dead = False
         self.age = 0
+        self.cost=cost
+        self.quality=quality
 
-    def interact(self, inv):
+    def interact(self, money):
         if self.grown:
-            inv.add_item(self.crop_name)
+            money.money+=int(self.cost*self.quality)
+
         if self.grown or self.dead:
             self.kill()
         

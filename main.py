@@ -82,6 +82,43 @@ class Inventory():
             screen.blit(item[1]["visual_count"], item[1]["visual_count"].get_rect(center=(current_x, 50)))
             current_x+=50
             
+class Money():
+    def __init__(self):
+        self.icon_image = pygame.transform.scale(pygame.image.load("images/coin.png").convert_alpha(), (25,25))
+        self.icon_rect = self.icon_image.get_rect(center=(0,0))
+        self.font = pygame.font.Font(None, 48)
+        self.money = 100
+    def draw(self,screen):
+        text = self.font.render(str(self.money),True,(255,255,255))
+        screen.blit(text,text.get_rect(center=(screen_width-100, 100)))
+        screen.blit(self.icon_image, self.icon_image.get_rect(center=(screen_width-100+text.get_width()//2 + 25//2, 100)))
+        
+        
+class Calendar():
+    def __init__(self):
+        self.font = pygame.font.Font(None, 48)
+        self.writing = day_font.render("Day " + str(day), True, (0,0,0))
+        self.rect = day_writing.get_rect(center=(screen_width-100, 50))
+        self.months = ["Spring", "Summer", "Fall"]
+        self.current_month = self.months[0]
+        self.current_index = 0
+        self.current_day = 1
+        self.writing = self.font.render(self.current_month + " " + str(self.current_day), True, (0,0,0))
+        self.rect = self.writing.get_rect(center=(screen_width-100, 50))
+        
+    def iterate(self):
+        self.current_day+=1
+        if self.current_day%31==0:
+            self.current_day=1
+            self.current_index+=1
+            if self.current_index>=len(self.months):
+                self.current_index=0
+            self.current_month=self.months[self.current_index]
+        self.writing = self.font.render(self.current_month + " " + str(self.current_day), True, (0,0,0))
+        self.rect = self.writing.get_rect(center=(screen_width-100, 50))
+    
+    def display(self, screen):
+        screen.blit(self.writing,self.rect)
         
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -232,10 +269,15 @@ day_font = pygame.font.Font(None, 48)
 day_writing = day_font.render("Day " + str(day), True, (0,0,0))
 day_rect = day_writing.get_rect(center=(screen_width-100, 50))
 
-house = House(350,350)
+house = House(250,200)
+
+money = Money()
+
+calendar = Calendar()
 
 def day_change():
-    global player, map, day
+    global player, map, calendar
+    calendar.iterate()
     for row in map:
         for tile in row:
             if isinstance(tile, GroundTile):
@@ -267,11 +309,9 @@ while not quit:
                     inventory.hidden = not inventory.hidden
                 case pygame.K_p:
                     menu.hidden = not menu.hidden
-                case pygame.K_r:
-                    day+=1
-                    day_writing = day_font.render("Day " + str(day), True, (0,0,0))
-                    day_rect = day_writing.get_rect(center=(screen_width-100, 50))
-                    day_change()
+                case pygame.K_e:
+                    if(checkRange(player.rect,house.rect,house.interact_range)):
+                        day_change()
                 case pygame.K_1:
                     if len(player.tools) >= 1:
                         player.current_tool = player.tools[0]
@@ -351,7 +391,8 @@ while not quit:
                                             tile.crop=WheatTile(tile.rect.center[0], tile.rect.center[1])
                         elif player.current_tool.type == "harvesting":
                             if (not tile.crop==None) and (tile.crop.dead or tile.crop.grown):
-                                tile.crop = None
+                                tile.crop.interact(money)
+                                tile.crop=None
                         elif player.current_tool.type == "fertilizing":
                             if tile.fertilized==False:
                                 if "fertilizer" in inventory.items.keys():
@@ -368,6 +409,7 @@ while not quit:
     house.update([-player_speed[0], -player_speed[1]])        
         
     player.update(player_speed)
+
     
     #print(player_speed)
 
@@ -391,11 +433,12 @@ while not quit:
     if (not player.current_tool == None) and not player.current_tool.hidden:
         screen.blit(player.current_tool.image, player.current_tool.rect)
         
-    screen.blit(day_writing, day_rect)
+    calendar.display(screen)
         
     if not menu.hidden:
         screen.blit(menu.image, menu.rect)
 
+    money.draw(screen)
         
 
     pygame.display.flip()  # Refresh on-screen display
