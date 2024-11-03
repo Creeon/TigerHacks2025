@@ -5,6 +5,7 @@ import random
 #from tiles import Tile, InteractableTile, CropTile, WheatTile
 
 
+
 pygame.init()
 print(pygame.display.Info())
 screen_width, screen_height = 1200, 700
@@ -740,7 +741,7 @@ def toolsShop():
                            text_input = "BACK", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         
         tilling2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) - 200),
-                           text_input = "HOE (250)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+                           text_input = "FORK (250)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         tilling3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) - 200),
                            text_input = "TRACTOR (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         
@@ -760,7 +761,7 @@ def toolsShop():
                            text_input = "MACHINE (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         
         harvesting2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) - 120, (screen_height // 2) + 200),
-                           text_input = "FORK (250)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+                           text_input = "SCYTHE (250)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         harvesting3_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (190, 100)), pos = ((screen_width // 2) + 120, (screen_height // 2) + 200),
                            text_input = "COMBINE (500)", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         
