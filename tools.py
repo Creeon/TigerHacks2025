@@ -12,6 +12,7 @@ class Tool(pygame.sprite.Sprite):
         self.hidden = True
         self.player = player
         self.type=type
+        self.speed_mod = 1
     def update(self):
         orientation = self.player.orientation
         x,y = self.player.rect.center[0], self.player.rect.center[1]
@@ -36,6 +37,7 @@ class WateringCan(Tool):
 class Tractor(Tool):    
     def __init__(self, player):
         super().__init__("Tractor", "images/tractor.png", 500, 500, player, "tilling")
+        self.speed_mod=5
         
 class WaterPlane(Tool):    
     def __init__(self, player):
@@ -52,3 +54,12 @@ class Sickle(Tool):
 class FertilizingMachine(Tool):
     def __init__(self,player):
         super().__init__("Machine", "images/machine.png", 500,500,player,"fertilizing")
+        
+class Hoe(Tool):
+    def __init__(self, player):
+        super().__init__("Hoe", "images/hoe.png", 100, 50, player, "tilling")
+        
+class GardenFork(Tool):
+    def __init__(self, player):
+        super().__init__("Garden Fork", "images/garden_fork.png", 150,75, player, "tilling")
+        self.speed_mod=1.25

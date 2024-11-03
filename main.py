@@ -18,6 +18,7 @@ keys_pressed = []
 from tiles import *
 from tools import *
 from misc import *
+from button import *
 
 item_images = dict({
     "Wheat" : "images/best_wheat.png",
@@ -31,6 +32,9 @@ player_walk = dict({
     "forward2" : "images/For_Walk2.png",
     "Idle" : "images/Idle.png"
 })
+
+def get_font(size):
+    return pygame.font.Font(None, size)
 
 def checkCollision(moving_rect: pygame.rect.Rect, static_rect: pygame.rect.Rect, movement):
     if moving_rect.colliderect(static_rect):
@@ -82,6 +86,43 @@ class Inventory():
             screen.blit(item[1]["visual_count"], item[1]["visual_count"].get_rect(center=(current_x, 50)))
             current_x+=50
             
+class Money():
+    def __init__(self):
+        self.icon_image = pygame.transform.scale(pygame.image.load("images/coin.png").convert_alpha(), (25,25))
+        self.icon_rect = self.icon_image.get_rect(center=(0,0))
+        self.font = pygame.font.Font(None, 48)
+        self.money = 100
+    def draw(self,screen):
+        text = self.font.render(str(self.money),True,(255,255,255))
+        screen.blit(text,text.get_rect(center=(screen_width-100, 100)))
+        screen.blit(self.icon_image, self.icon_image.get_rect(center=(screen_width-100+text.get_width()//2 + 25//2, 100)))
+        
+        
+class Calendar():
+    def __init__(self):
+        self.font = pygame.font.Font(None, 48)
+        self.writing = day_font.render("Day " + str(day), True, (0,0,0))
+        self.rect = day_writing.get_rect(center=(screen_width-100, 50))
+        self.months = ["Spring", "Summer", "Fall"]
+        self.current_month = self.months[0]
+        self.current_index = 0
+        self.current_day = 1
+        self.writing = self.font.render(self.current_month + " " + str(self.current_day), True, (0,0,0))
+        self.rect = self.writing.get_rect(center=(screen_width-100, 50))
+        
+    def iterate(self):
+        self.current_day+=1
+        if self.current_day%31==0:
+            self.current_day=1
+            self.current_index+=1
+            if self.current_index>=len(self.months):
+                self.current_index=0
+            self.current_month=self.months[self.current_index]
+        self.writing = self.font.render(self.current_month + " " + str(self.current_day), True, (0,0,0))
+        self.rect = self.writing.get_rect(center=(screen_width-100, 50))
+    
+    def display(self, screen):
+        screen.blit(self.writing,self.rect)
         
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -167,6 +208,201 @@ class Player(pygame.sprite.Sprite):
         print(self.orientation)
         self.last_orientation = self.orientation
         
+class shopMenu:
+    menu_quit = True
+    screen = pygame.display.set_mode((screen_width,screen_height))
+    menu_mouse_pos = pygame.mouse.get_pos() #Get mouse position
+    seed_button = Button(image = None, pos = (0,0), text_input = None, font = get_font(100), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+    tools_button = Button(image = None, pos = (0,0), text_input = None, font = get_font(100), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+
+#Function to open and close main shop menu, initialize, etc
+
+def shopMenuShow():
+    background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (400, 400))
+    shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
+
+    shopMenu.menu_quit = not shopMenu.menu_quit
+    #While quit is false
+    print("Shop menu open!")
+    while (shopMenu.menu_quit == False):
+        #Credit for the majority of this menu structure AND Button class to Baraltech in this tutorial (https://www.youtube.com/watch?v=GMBqjxcKogA)
+        menu_mouse_pos = pygame.mouse.get_pos() #Get mouse position
+        shop_text_header = get_font(48).render("SHOP", True, (255, 255, 255))
+        shop_menu_rect = shop_text_header.get_rect(center = (screen_width // 2,(screen_height - 300)// 2))
+
+        shopMenu.seed_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (180, 120)), pos = (screen_width // 2,(screen_height - 120)// 2),
+                             text_input = "SEEDS", font = get_font(48), base_color = (0,255,0), hovering_color = (0, 0, 0))
+        shopMenu.tools_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (180, 120)), pos = (screen_width // 2,(screen_height + 200)// 2),
+                              text_input = "TOOLS", font = get_font(48), base_color = (0, 0, 255), hovering_color = (0, 0, 0))
+        
+        shopMenu.screen.blit(shop_text_header, shop_menu_rect)
+
+        for button in [shopMenu.seed_button, shopMenu.tools_button]:
+            button.changeColor(menu_mouse_pos)
+            button.update(shopMenu.screen)
+    
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                keys_pressed.append(event.key)
+                if event.key == pygame.K_x:
+                    shopMenu.menu_quit=True
+            if event.type == pygame.KEYUP:
+                keys_pressed.remove(event.key)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if shopMenu.seed_button.checkForInput(pygame.mouse.get_pos()):
+                    print("SEEDS!")
+                    seedShop()
+                if shopMenu.tools_button.checkForInput(pygame.mouse.get_pos()):
+                    print("TOOLS!")
+                    toolsShop()
+                
+
+        pygame.display.update()
+
+#Function to open seed window in shop
+def seedShop():
+    print("Seed shop!")
+    
+    while (shopMenu.menu_quit == False):
+        seed_mouse_pos = pygame.mouse.get_pos()
+
+        background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (400, 400))
+        shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
+
+        seed_text = get_font(48).render("SEED SHOP", True, (0, 0, 0))
+        seed_rect = seed_text.get_rect(center = (screen_width // 2,(screen_height - 300)// 2))
+        shopMenu.screen.blit(seed_text, seed_rect)
+
+        #initialize buttons
+        seed_back = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (100, 80)), pos = (screen_width // 2, (screen_height // 2) + 120),
+                           text_input = "BACK", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        wheat_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (120, 80)), pos = ((screen_width // 2) - 65, (screen_height // 2) - 50),
+                           text_input = "WHEAT", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        gmo_wheat_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (120, 80)), pos = ((screen_width // 2) + 65, (screen_height // 2) - 50),
+                           text_input = "GMO WHEAT", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        pumpkin_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (120, 80)), pos = ((screen_width // 2) - 65, (screen_height // 2) + 50),
+                           text_input = "PUMPKIN", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        gmo_pumpkin_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (120, 80)), pos = ((screen_width // 2) + 65, (screen_height // 2) + 50),
+                           text_input = "GMO PUMPKIN", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+
+        #Display Buttons
+        seed_back.changeColor(seed_mouse_pos)
+        seed_back.update(shopMenu.screen)
+        wheat_button.changeColor(seed_mouse_pos)
+        wheat_button.update(shopMenu.screen)
+        gmo_wheat_button.changeColor(seed_mouse_pos)
+        gmo_wheat_button.update(shopMenu.screen)
+        pumpkin_button.changeColor(seed_mouse_pos)
+        pumpkin_button.update(shopMenu.screen)
+        gmo_pumpkin_button.changeColor(seed_mouse_pos)
+        gmo_pumpkin_button.update(shopMenu.screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                keys_pressed.append(event.key)
+                if event.key == pygame.K_x:
+                    shopMenu.menu_quit=True
+            elif event.type == pygame.KEYUP:
+                keys_pressed.remove(event.key)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if seed_back.checkForInput(pygame.mouse.get_pos()):
+                    print("BACK SEEDS!")
+                    shopMenu.menu_quit = not shopMenu.menu_quit
+                    shopMenuShow()
+                if wheat_button.checkForInput(pygame.mouse.get_pos()):
+                    print("WHEAT!")
+                    if (Player.coins > 0):
+                        pass
+                if gmo_wheat_button.checkForInput(pygame.mouse.get_pos()):
+                    print("GMO WHEAT!")
+                    if (Player.coins > 0):
+                        pass
+                if pumpkin_button.checkForInput(pygame.mouse.get_pos()):
+                    print("PUMPKIN!")
+                    if (Player.coins > 0):
+                        pass
+                if gmo_pumpkin_button.checkForInput(pygame.mouse.get_pos()):
+                    print("GMO PUMPKIN!")
+                    if (Player.coins > 0):
+                        pass
+
+
+    
+
+        pygame.display.update()
+
+
+#Function to open tool window in shop
+def toolsShop():
+    print("Tool shop!")
+
+    while (shopMenu.menu_quit == False):
+        tools_mouse_pos = pygame.mouse.get_pos()
+
+        background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (400, 400))
+        shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
+
+        tools_text = get_font(48).render("TOOL SHOP", True, (0, 0, 0))
+        tools_rect = tools_text.get_rect(center = (screen_width // 2,(screen_height - 300)// 2))
+        shopMenu.screen.blit(tools_text, tools_rect)
+
+        tools_back = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (100, 80)), pos = (screen_width // 2, (screen_height // 2) + 120),
+                           text_input = "BACK", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        tool1_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 80)), pos = ((screen_width // 2) - 50, (screen_height // 2) - 50),
+                           text_input = "TOOL1", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        tool2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 80)), pos = ((screen_width // 2) + 50, (screen_height // 2) - 50),
+                           text_input = "TOOL2", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        tool3_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 80)), pos = ((screen_width // 2) - 50, (screen_height // 2) + 50),
+                           text_input = "TOOL3", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        tool4_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 80)), pos = ((screen_width // 2) + 50, (screen_height // 2) + 50),
+                           text_input = "TOOL4", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        
+        tools_back.changeColor(tools_mouse_pos)
+        tools_back.update(shopMenu.screen)
+        tool1_button.changeColor(tools_mouse_pos)
+        tool1_button.update(shopMenu.screen)
+        tool2_button.changeColor(tools_mouse_pos)
+        tool2_button.update(shopMenu.screen)
+        tool3_button.changeColor(tools_mouse_pos)
+        tool3_button.update(shopMenu.screen)
+        tool4_button.changeColor(tools_mouse_pos)
+        tool4_button.update(shopMenu.screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                keys_pressed.append(event.key)
+                if event.key == pygame.K_x:
+                    shopMenu.menu_quit=True
+            elif event.type == pygame.KEYUP:
+                keys_pressed.remove(event.key)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if tools_back.checkForInput(pygame.mouse.get_pos()):
+                    print("BACK TOOLS!")
+                    shopMenu.menu_quit = not shopMenu.menu_quit
+                    shopMenuShow()
+                if tool1_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL1!")
+                    #TODO: Function to add tool to inventory
+                if tool2_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL2!")
+                    #TODO: Function to add tool to inventory
+                if tool3_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL3!")
+                    #TODO: Function to add tool to inventory
+                if tool4_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL4!")
+                    #TODO: Function to add tool to inventory
+
+        pygame.display.update()
+        
 def getSpeed(keys, speed):
     target_speed = [0,0,0,0] #+x -x +y -y
     for key in keys:
@@ -220,8 +456,8 @@ for i in range(100):
     inventory.add_item("grass")
 inventory.add_item("fertilizer", count=100)
     
-player.tools.append(Tractor(player))
-player.tools.append(WateringCan(player))
+player.tools.append(Hoe(player))
+player.tools.append(GardenFork(player))
 player.tools.append(WaterPlane(player))
 player.tools.append(Shovel(player))
 player.tools.append(Sickle(player))
@@ -232,10 +468,15 @@ day_font = pygame.font.Font(None, 48)
 day_writing = day_font.render("Day " + str(day), True, (0,0,0))
 day_rect = day_writing.get_rect(center=(screen_width-100, 50))
 
-house = House(350,350)
+house = House(250,200)
+
+money = Money()
+
+calendar = Calendar()
 
 def day_change():
-    global player, map, day
+    global player, map, calendar
+    calendar.iterate()
     for row in map:
         for tile in row:
             if isinstance(tile, GroundTile):
@@ -267,11 +508,9 @@ while not quit:
                     inventory.hidden = not inventory.hidden
                 case pygame.K_p:
                     menu.hidden = not menu.hidden
-                case pygame.K_r:
-                    day+=1
-                    day_writing = day_font.render("Day " + str(day), True, (0,0,0))
-                    day_rect = day_writing.get_rect(center=(screen_width-100, 50))
-                    day_change()
+                case pygame.K_e:
+                    if(checkRange(player.rect,house.rect,house.interact_range)):
+                        day_change()
                 case pygame.K_1:
                     if len(player.tools) >= 1:
                         player.current_tool = player.tools[0]
@@ -307,7 +546,9 @@ while not quit:
                         "image" : pygame.transform.scale(pygame.image.load(item_images[player.seeds[player.current_seed]["name"]]).convert_alpha(), (25,25)),
                         "count" : player.seeds[player.current_seed]["count"],
                         "visual_count" : inventory.font.render(str(player.seeds[player.current_seed]["count"]), True, (255,255,255))
-                    })                
+                    })
+                case pygame.K_x:
+                    shopMenuShow()
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
             match event.key:
@@ -316,8 +557,11 @@ while not quit:
                         player.current_tool.hidden=True
 
     screen.fill((6,64,43))  # Fill the display with a solid color
-    
+    speed_mod = 1   
+    if not player.current_tool == None:
+        speed_mod = player.current_tool.speed_mod
     player_speed = getSpeed(keys_pressed, 10)
+    player_speed = [int(player_speed[0] * speed_mod), int(player_speed[1] * speed_mod)]
     
     for row in map:
         for tile in row:
@@ -348,7 +592,8 @@ while not quit:
                                             tile.crop=WheatTile(tile.rect.center[0], tile.rect.center[1])
                         elif player.current_tool.type == "harvesting":
                             if (not tile.crop==None) and (tile.crop.dead or tile.crop.grown):
-                                tile.crop = None
+                                tile.crop.interact(money)
+                                tile.crop=None
                         elif player.current_tool.type == "fertilizing":
                             if tile.fertilized==False:
                                 if "fertilizer" in inventory.items.keys():
@@ -365,6 +610,7 @@ while not quit:
     house.update([-player_speed[0], -player_speed[1]])        
         
     player.update(player_speed)
+
     
     #print(player_speed)
 
@@ -388,11 +634,12 @@ while not quit:
     if (not player.current_tool == None) and not player.current_tool.hidden:
         screen.blit(player.current_tool.image, player.current_tool.rect)
         
-    screen.blit(day_writing, day_rect)
+    calendar.display(screen)
         
     if not menu.hidden:
         screen.blit(menu.image, menu.rect)
 
+    money.draw(screen)
         
 
     pygame.display.flip()  # Refresh on-screen display
