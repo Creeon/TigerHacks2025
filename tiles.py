@@ -138,7 +138,7 @@ class CarrotTile(CropTile):
         x = 0,
         y = 0,
     ):
-        super().__init__("Carrot", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_carrot"], dead_image=images["dead_carrot"], grown_image=images["dead_carrot"], interact_range=100, risk=3)
+        super().__init__("Carrot", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_carrot"], dead_image=images["dead_carrot"], grown_image=images["grown_carrot"], interact_range=100, risk=3)
         
 class Gate(InteractableTile):
     def __init__(self,x:int,y:int,rot:int):

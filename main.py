@@ -28,11 +28,13 @@ item_images = dict({
     "fertilizer" : "images/fertilizer.png"
 })
 
-player_walk = dict({
-    "forward1" : "images/For_Walk1.png",
-    "forward2" : "images/For_Walk2.png",
-    "Idle" : "images/Idle.png"
+tiles = dict({
+    "Spring" : None,
+    "Summer" : None,
+    "Fall" : None,
+    "Winter" : None
 })
+
 
 def get_font(size):
     return pygame.font.Font(None, size)
@@ -77,7 +79,7 @@ class Inventory():
                 "visual_count" : self.font.render(str(count), True, (255,255,255))
             })
             self.image=pygame.Surface((self.image.get_width() + 50, self.image.get_height()))
-            self.image.fill((181,153,128))
+            self.image.fill((110,110,110))
             self.rect = self.image.get_rect(center=(self.image.get_width()//2+5, 30))
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -104,7 +106,7 @@ class Calendar():
         self.font = pygame.font.Font(None, 48)
         self.writing = day_font.render("Day " + str(day), True, (0,0,0))
         self.rect = day_writing.get_rect(center=(screen_width-100, 50))
-        self.months = ["Spring", "Summer", "Fall"]
+        self.months = ["Spring", "Summer", "Fall", "Winter"]
         self.current_month = self.months[0]
         self.current_index = 0
         self.current_day = 1
@@ -112,13 +114,20 @@ class Calendar():
         self.rect = self.writing.get_rect(center=(screen_width-100, 50))
         
     def iterate(self):
+        global map
         self.current_day+=1
-        if self.current_day%31==0:
+        if self.current_day%31==0 or self.current_month=="Winter":
             self.current_day=1
             self.current_index+=1
             if self.current_index>=len(self.months):
                 self.current_index=0
             self.current_month=self.months[self.current_index]
+            match self.current_month:
+                case "Spring":
+                    for row in map:
+                        for tile in row:
+                            if isinstance(tile, GroundTile):
+                                t
         self.writing = self.font.render(self.current_month + " " + str(self.current_day), True, (0,0,0))
         self.rect = self.writing.get_rect(center=(screen_width-100, 50))
     
@@ -174,11 +183,15 @@ class Player(pygame.sprite.Sprite):
         self.seeds = [
             dict({
                 "name" : "Wheat",
-                "count" : 100
+                "count" : 1000
             }),
             dict({
                 "name" : "Pumpkin",
-                "count" : 100
+                "count" : 1000
+            }),
+            dict({
+                "name" : "Carrot",
+                "count" : 1000
             })
         ]
         
@@ -576,7 +589,7 @@ while not quit:
 
     screen.fill((6,64,43))  # Fill the display with a solid color
     speed_mod = 1   
-    if not player.current_tool == None:
+    if not player.current_tool == None and not player.current_tool.hidden:
         speed_mod = player.current_tool.speed_mod
     player_speed = getSpeed(keys_pressed, 10)
     player_speed = [int(player_speed[0] * speed_mod), int(player_speed[1] * speed_mod)]
@@ -608,6 +621,8 @@ while not quit:
                                             tile.crop=PumpkinTile(tile.rect.center[0], tile.rect.center[1])
                                         case "Wheat":
                                             tile.crop=WheatTile(tile.rect.center[0], tile.rect.center[1])
+                                        case "Carrot":
+                                            tile.crop=CarrotTile(tile.rect.center[0], tile.rect.center[1])
                         elif player.current_tool.type == "harvesting":
                             if (not tile.crop==None) and (tile.crop.dead or tile.crop.grown):
                                 tile.crop.interact(money)
