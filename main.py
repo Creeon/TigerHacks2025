@@ -127,7 +127,7 @@ class Calendar():
                     for row in map:
                         for tile in row:
                             if isinstance(tile, GroundTile):
-                                t
+                                pass
         self.writing = self.font.render(self.current_month + " " + str(self.current_day), True, (0,0,0))
         self.rect = self.writing.get_rect(center=(screen_width-100, 50))
     
