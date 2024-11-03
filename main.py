@@ -5,6 +5,7 @@ import random
 #from tiles import Tile, InteractableTile, CropTile, WheatTile
 
 
+
 pygame.init()
 print(pygame.display.Info())
 screen_width, screen_height = 1200, 700
@@ -904,7 +905,7 @@ day_writing = day_font.render("Day " + str(day), True, (0,0,0))
 day_rect = day_writing.get_rect(center=(screen_width-100, 50))
 
 money = Money()
-money.money=100
+money.money=10000
 calendar = Calendar()
 
 christmas_tiger = ChristmasTiger(800,400)
