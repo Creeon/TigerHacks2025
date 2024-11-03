@@ -11,6 +11,7 @@ pygame.init()
 print(pygame.display.Info())
 screen_width, screen_height = 1200, 700
 day = 1
+coins = 50
 screen = pygame.display.set_mode((screen_width,screen_height))
 clock = pygame.time.Clock()
 quit = False
@@ -252,9 +253,9 @@ def shopMenuShow():
         #Credit for the majority of this menu structure AND Button class to Baraltech in this tutorial (https://www.youtube.com/watch?v=GMBqjxcKogA)
         menu_mouse_pos = pygame.mouse.get_pos() #Get mouse position
         shop_text_header = get_font(48).render("SHOP", True, (255, 255, 255))
-        shop_menu_rect = shop_text_header.get_rect(center = (screen_width // 2,(screen_height - 200)// 2))
+        shop_menu_rect = shop_text_header.get_rect(center = (screen_width // 2,(screen_height - 300)// 2))
 
-        shopMenu.seed_button = Button(image = pygame.image.load("images/CharacterFrames/for_walk1.png"), pos = (screen_width // 2,(screen_height - 100)// 2),
+        shopMenu.seed_button = Button(image = pygame.image.load("images/CharacterFrames/for_walk1.png"), pos = (screen_width // 2,(screen_height - 120)// 2),
                              text_input = "SEEDS", font = get_font(48), base_color = (0,255,0), hovering_color = (0, 0, 0))
         shopMenu.tools_button = Button(image = pygame.image.load("images/CharacterFrames/for_walk1.png"), pos = (screen_width // 2,(screen_height + 200)// 2),
                               text_input = "TOOLS", font = get_font(48), base_color = (0, 0, 255), hovering_color = (0, 0, 0))
@@ -298,14 +299,33 @@ def seedShop():
         shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
 
         seed_text = get_font(48).render("SEED SCREEN", True, (0, 30, 0))
-        seed_rect = seed_text.get_rect(center = (screen_width // 2, (screen_height - 200)// 2))
+        seed_rect = seed_text.get_rect(center = (screen_width // 2, (screen_height // 2) - 300))
         shopMenu.screen.blit(seed_text, seed_rect)
 
-        seed_back = Button(image = None, pos = (screen_width // 2, (screen_height - 100)// 2),
-                           text_input = "BACK", font = get_font(48), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        
+        #initialize buttons
+        seed_back = Button(image = None, pos = (screen_width // 2, (screen_height + 100)),
+                           text_input = "BACK", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        wheat_button = Button(image = None, pos = ((screen_width // 2) - 50, (screen_height // 2) - 50),
+                           text_input = "WHEAT", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        gmo_wheat_button = Button(image = None, pos = ((screen_width // 2) + 50, (screen_height // 2) - 50),
+                           text_input = "GMO WHEAT", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        pumpkin_button = Button(image = None, pos = ((screen_width // 2) - 50, (screen_height // 2) + 50),
+                           text_input = "PUMPKIN", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        gmo_pumpkin_button = Button(image = None, pos = ((screen_width // 2) + 50, (screen_height // 2) + 50),
+                           text_input = "GMO PUMPKIN", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+
+
+        #Display Buttons
         seed_back.changeColor(seed_mouse_pos)
         seed_back.update(shopMenu.screen)
+        wheat_button.changeColor(seed_mouse_pos)
+        wheat_button.update(shopMenu.screen)
+        gmo_wheat_button.changeColor(seed_mouse_pos)
+        gmo_wheat_button.update(shopMenu.screen)
+        pumpkin_button.changeColor(seed_mouse_pos)
+        pumpkin_button.update(shopMenu.screen)
+        gmo_pumpkin_button.changeColor(seed_mouse_pos)
+        gmo_pumpkin_button.update(shopMenu.screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
