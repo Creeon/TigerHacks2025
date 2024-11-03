@@ -123,7 +123,7 @@ class Player(pygame.sprite.Sprite):
         self.walking_type = 0
 
     coins = 50
-        
+
     def update(self, movement):
         #self.rect = self.rect.move(movement[0], movement[1])
         if movement[0] == 0:
@@ -226,6 +226,10 @@ menu = Menu(background_image="images/angry.jpg")
 day_font = pygame.font.Font(None, 48)
 day_writing = day_font.render("Day " + str(day), True, (0,0,0))
 day_rect = day_writing.get_rect(center=(screen_width-100, 50))
+coin_font = pygame.font.Font(None, 48)
+coin_writing = coin_font.render("Coins: " + str(Player.coins), True, (0,0,0))
+coin_rect = coin_writing.get_rect(center=(screen_width-90, 75))
+
 
 #************SHOP MENU************
 #Font size function from Baraltech's tutorial. Found on his gitHub as part of his menu tutorial here: https://github.com/baraltech/Menu-System-PyGame/blob/main/main.py
@@ -234,25 +238,33 @@ def get_font(size):
 
 #Functions to buy seeds
 def buyWheat():
-    player.coins -= 10
+    Player.coins -= 10
     #TODO: Add 10 wheat seeds to inventory
-    print("COINS: ")
-    print(player.coins)
+    coin_writing = coin_font.render("Coins: " + str(Player.coins), True, (0,0,0))
+    coin_rect = coin_writing.get_rect(center=(screen_width-90, 75))
+    screen.blit(coin_writing, coin_rect)
+    print("COINS: " + str(Player.coins))
 def buyGMOWheat():
-    player.coins -= 7
+    Player.coins -= 7
     #TODO: Add 10 seeds inventory
-    print("COINS: ")
-    print(player.coins)
+    coin_writing = coin_font.render("Coins: " + str(Player.coins), True, (0,0,0))
+    coin_rect = coin_writing.get_rect(center=(screen_width-90, 75))
+    screen.blit(coin_writing, coin_rect)
+    print("COINS: " + str(Player.coins))
 def buyPumpkin():
-    player.coins -= 15
+    Player.coins = Player.coins - 15
     #TODO: Add 10 seeds to inventory
-    print("COINS: ")
-    print(player.coins)
+    coin_writing = coin_font.render("Coins: " + str(Player.coins), True, (0,0,0))
+    coin_rect = coin_writing.get_rect(center=(screen_width-90, 75))
+    screen.blit(coin_writing, coin_rect)
+    print("COINS: " + str(Player.coins))
 def buyGMOPumpkin():
-    player.coins -= 11
+    Player.coins -= 11
     #TODO: Add 10 seeds to inventory
-    print("COINS: ")
-    print(player.coins)
+    coin_writing = coin_font.render("Coins: " + str(Player.coins), True, (0,0,0))
+    coin_rect = coin_writing.get_rect(center=(screen_width-90, 75))
+    screen.blit(coin_writing, coin_rect)
+    print("COINS: " + str(Player.coins))
 
 #Class to store static variable so shop menu can open and close
 class shopMenu:
@@ -315,20 +327,20 @@ def seedShop():
         background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (400, 400))
         shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
 
-        seed_text = get_font(48).render("SEED SHOP", True, (0, 30, 0))
-        seed_rect = seed_text.get_rect(center = (screen_width // 2, (screen_height // 2) - 140))
+        seed_text = get_font(48).render("SEED SHOP", True, (0, 0, 0))
+        seed_rect = seed_text.get_rect(center = (screen_width // 2,(screen_height - 300)// 2))
         shopMenu.screen.blit(seed_text, seed_rect)
 
         #initialize buttons
-        seed_back = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (100, 70)), pos = (screen_width // 2, (screen_height // 2) + 100),
-                           text_input = "BACK", font = get_font(20), base_color = (255, 255, 255), hovering_color = (100,200))
-        wheat_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 70)), pos = ((screen_width // 2) - 50, (screen_height // 2) - 50),
+        seed_back = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (100, 80)), pos = (screen_width // 2, (screen_height // 2) + 120),
+                           text_input = "BACK", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        wheat_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (120, 80)), pos = ((screen_width // 2) - 65, (screen_height // 2) - 50),
                            text_input = "WHEAT", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        gmo_wheat_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 70)), pos = ((screen_width // 2) + 50, (screen_height // 2) - 50),
+        gmo_wheat_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (120, 80)), pos = ((screen_width // 2) + 65, (screen_height // 2) - 50),
                            text_input = "GMO WHEAT", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        pumpkin_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 70)), pos = ((screen_width // 2) - 50, (screen_height // 2) + 50),
+        pumpkin_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (120, 80)), pos = ((screen_width // 2) - 65, (screen_height // 2) + 50),
                            text_input = "PUMPKIN", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        gmo_pumpkin_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 70)), pos = ((screen_width // 2) + 50, (screen_height // 2) + 50),
+        gmo_pumpkin_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (120, 80)), pos = ((screen_width // 2) + 65, (screen_height // 2) + 50),
                            text_input = "GMO PUMPKIN", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
 
         #Display Buttons
@@ -359,16 +371,20 @@ def seedShop():
                     shopMenuShow()
                 if wheat_button.checkForInput(pygame.mouse.get_pos()):
                     print("WHEAT!")
-                    buyWheat()
+                    if (Player.coins > 0):
+                        buyWheat()
                 if gmo_wheat_button.checkForInput(pygame.mouse.get_pos()):
                     print("GMO WHEAT!")
-                    buyGMOWheat()
+                    if (Player.coins > 0):
+                        buyGMOWheat()
                 if pumpkin_button.checkForInput(pygame.mouse.get_pos()):
                     print("PUMPKIN!")
-                    buyPumpkin()
+                    if (Player.coins > 0):
+                        buyPumpkin()
                 if gmo_pumpkin_button.checkForInput(pygame.mouse.get_pos()):
                     print("GMO PUMPKIN!")
-                    buyGMOPumpkin()
+                    if (Player.coins > 0):
+                        buyGMOPumpkin()
 
 
     
@@ -386,15 +402,31 @@ def toolsShop():
         background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (400, 400))
         shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
 
-        tools_text = get_font(48).render("TOOLS SCREEN", True, (0, 0, 30))
-        tools_rect = tools_text.get_rect(center = (screen_width // 2, (screen_height - 200)// 2))
+        tools_text = get_font(48).render("TOOL SHOP", True, (0, 0, 0))
+        tools_rect = tools_text.get_rect(center = (screen_width // 2,(screen_height - 300)// 2))
         shopMenu.screen.blit(tools_text, tools_rect)
 
-        tools_back = Button(image = None, pos = (screen_width // 2, (screen_height - 100)// 2),
-                           text_input = "BACK", font = get_font(48), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        tools_back = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (100, 80)), pos = (screen_width // 2, (screen_height // 2) + 120),
+                           text_input = "BACK", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        tool1_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 80)), pos = ((screen_width // 2) - 50, (screen_height // 2) - 50),
+                           text_input = "TOOL1", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        tool2_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 80)), pos = ((screen_width // 2) + 50, (screen_height // 2) - 50),
+                           text_input = "TOOL2", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        tool3_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 80)), pos = ((screen_width // 2) - 50, (screen_height // 2) + 50),
+                           text_input = "TOOL3", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
+        tool4_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 80)), pos = ((screen_width // 2) + 50, (screen_height // 2) + 50),
+                           text_input = "TOOL4", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
         
         tools_back.changeColor(tools_mouse_pos)
         tools_back.update(shopMenu.screen)
+        tool1_button.changeColor(tools_mouse_pos)
+        tool1_button.update(shopMenu.screen)
+        tool2_button.changeColor(tools_mouse_pos)
+        tool2_button.update(shopMenu.screen)
+        tool3_button.changeColor(tools_mouse_pos)
+        tool3_button.update(shopMenu.screen)
+        tool4_button.changeColor(tools_mouse_pos)
+        tool4_button.update(shopMenu.screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -407,9 +439,25 @@ def toolsShop():
                 keys_pressed.remove(event.key)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if tools_back.checkForInput(pygame.mouse.get_pos()):
-                    print("BACK SEEDS!")
+                    print("BACK TOOLS!")
                     shopMenu.menu_quit = not shopMenu.menu_quit
                     shopMenuShow()
+                if tool1_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL1!")
+                    #TODO: Function to add tool to inventory
+                if tool2_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL2!")
+                    #TODO: Function to add tool to inventory
+                if tool3_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL3!")
+                    #TODO: Function to add tool to inventory
+                if tool4_button.checkForInput(pygame.mouse.get_pos()):
+                    #TODO: If player does not already have:
+                    print("TOOL4!")
+                    #TODO: Function to add tool to inventory
 
         pygame.display.update()
 
