@@ -20,6 +20,15 @@ from tools import *
 from misc import *
 from button import *
 
+#audio
+grass_1 = pygame.mixer.Sound("sounds/grass_1.wav")
+grass_2 = pygame.mixer.Sound("sounds/grass_2.wav")
+leaves_1 = pygame.mixer.Sound("sounds/grass_1.wav")
+leaves_2 = pygame.mixer.Sound("sounds/grass_2.wav")
+snow_1 = pygame.mixer.Sound("sounds/snow_1.wav")
+snow_2 = pygame.mixer.Sound("sounds/snow_2.wav")
+kachow = pygame.mixer.Sound("sounds/kachow.mp3")
+
 item_images = dict({
     "Wheat" : "images/Crops/wheat2.png",
     "Pumpkin" : "images/Crops/pum2.png",
@@ -192,6 +201,8 @@ class Player(pygame.sprite.Sprite):
         
         self.frame_counter=0
         
+        self.sound_counter=0
+        
         self.walking_type = 0
         
         self.current_tool = None
@@ -266,8 +277,15 @@ class Player(pygame.sprite.Sprite):
                 self.orientation = 0 if movement[0] > 0 else 180
         if movement[0]==0 and movement[1]==0:
             self.frame_counter=0
+            self.sound_counter=0
             self.walking_type=0
             self.image = self.idle[str(self.orientation)]
+            grass_1.stop()
+            grass_2.stop()
+            leaves_1.stop()
+            leaves_2.stop()
+            snow_1.stop()
+            snow_2.stop()
         else:
             if self.frame_counter%self.animation_change==0 or not self.last_orientation == self.orientation:
                 self.frame_counter=0
@@ -280,6 +298,36 @@ class Player(pygame.sprite.Sprite):
                     case 1:
                         self.image = self.walking_1[str(self.orientation)]
             self.frame_counter+=1
+            calendar.current_month="Fall"
+            if(self.sound_counter==0):
+                match calendar.current_month:
+                    case "Spring" | "Summer":
+                        grass_1.play()
+                    case "Fall":
+                        leaves_1.play()
+                    case "Winter":
+                        snow_1.play()
+            
+            if self.sound_counter%30==0:
+                if self.sound_counter==30:
+                    match calendar.current_month:
+                        case "Spring" | "Summer":
+                            grass_2.play()
+                        case "Fall":
+                            leaves_2.play()
+                        case "Winter":
+                            snow_2.play()
+                else:
+                    self.sound_counter=0
+                    match calendar.current_month:
+                        case "Spring" | "Summer":
+                            grass_1.play()
+                        case "Fall":
+                            leaves_1.play()
+                        case "Winter":
+                            snow_1.play()
+            self.sound_counter+=1
+
         print(self.orientation)
         self.last_orientation = self.orientation
         
@@ -379,52 +427,42 @@ def buyTilling2():
     if money.money >= 250:
         money.money -= 250
         player.tools[0]=GardenFork(player)
-    #TODO: Add 10 wheat seeds to inventory
 def buyTilling3():
     if money.money >= 500:
         money.money -= 500
         player.tools[0]=Tractor(player)
-    #TODO: Add 10 wheat seeds to inventory
 def buyHarvesting2():
     if money.money >= 250:
         money.money -= 250
         player.tools[4]=Scythe(player)
-    #TODO: Add 10 wheat seeds to inventory
 def buyHarvesting3():
     if money.money >= 500:
         money.money -= 500
         player.tools[4]=Combine(player)
-    #TODO: Add 10 wheat seeds to inventory
 def buyWatering2():
     if money.money >= 250:
         money.money -= 250
         player.tools[1]=Hose(player)
-    #TODO: Add 10 wheat seeds to inventory
 def buyWatering3():
     if money.money >= 500:
         money.money -= 500
         player.tools[1]=WaterPlane(player)
-    #TODO: Add 10 wheat seeds to inventory
 def buyFertlization2():
     if money.money >= 250:
         money.money -= 250
         player.tools[3]=Sprayer(player)
-    #TODO: Add 10 wheat seeds to inventory
 def buyFertlization3():
     if money.money >= 500:
         money.money -= 500
         player.tools[3]=FertilizingMachine(player)
-    #TODO: Add 10 wheat seeds to inventory
 def buyPlanting2():
     if money.money >= 250:
         money.money -= 250
         player.tools[2]=Plow(player)
-    #TODO: Add 10 wheat seeds to inventory
 def buyPlanting3():
     if money.money >= 500:
         money.money -= 500
         player.tools[2]=Ox(player)
-    #TODO: Add 10 wheat seeds to inventory
 
     
 class shopMenu:
@@ -721,43 +759,33 @@ def toolsShop():
                     shopMenu.menu_quit = not shopMenu.menu_quit
                     shopMenuShow()
                 if  tilling2_button.checkForInput(pygame.mouse.get_pos()): #tilling, harvesting, watering, fertilization, planting
-                    #TODO: If player does not already have:
                     print("TOOL1!")
                     buyTilling2()
                 if tilling3_button.checkForInput(pygame.mouse.get_pos()):
-                    #TODO: If player does not already have:
                     print("TOOL2!")
                     buyTilling3()
                 if harvesting2_button.checkForInput(pygame.mouse.get_pos()):
-                    #TODO: If player does not already have:
                     print("TOOL3!")
                     buyHarvesting2()
                 if harvesting3_button.checkForInput(pygame.mouse.get_pos()):
-                    #TODO: If player does not already have:
                     print("TOOL4!")
                     buyHarvesting3()
                 if watering2_button.checkForInput(pygame.mouse.get_pos()):
-                    #TODO: If player does not already have:
                     print("TOOL4!")
                     buyWatering2()
                 if watering3_button.checkForInput(pygame.mouse.get_pos()):
-                    #TODO: If player does not already have:
                     print("TOOL4!")
                     buyWatering3()
                 if fertilization2_button.checkForInput(pygame.mouse.get_pos()):
-                    #TODO: If player does not already have:
                     print("TOOL4!")
                     buyFertlization2()
                 if fertilization3_button.checkForInput(pygame.mouse.get_pos()):
-                    #TODO: If player does not already have:
                     print("TOOL4!")
                     buyFertlization3()
                 if planting2_button.checkForInput(pygame.mouse.get_pos()):
-                    #TODO: If player does not already have:
                     print("TOOL4!")
                     buyPlanting2()
                 if planting3_button.checkForInput(pygame.mouse.get_pos()):
-                    #TODO: If player does not already have:
                     print("TOOL4!")
                     buyPlanting3()
         pygame.display.update()
@@ -863,6 +891,7 @@ while not quit:
                     inventory.hidden = not inventory.hidden
                 case pygame.K_p:
                     menu.hidden = not menu.hidden
+                    kachow.play()
                 case pygame.K_e:
                     if(checkRange(player.rect,house.rect,house.interact_range)):
                         day_change()
