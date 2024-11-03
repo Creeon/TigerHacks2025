@@ -21,9 +21,10 @@ from misc import *
 from button import *
 
 item_images = dict({
-    "Wheat" : "images/best_wheat.png",
+    "Wheat" : "images/Crops/wheat2.png",
     "grass" : "images/grass.png",
-    "Pumpkin" : "images/pumpkin.png",
+    "Pumpkin" : "images/Crops/pum2.png",
+    "Carrot" : "images/Crops/car2.png",
     "fertilizer" : "images/fertilizer.png"
 })
 
@@ -638,8 +639,7 @@ while not quit:
         for tile in row:
             if not tile == None:
                 tile.display(screen)
-    if not inventory.hidden:
-        inventory.draw(screen)
+    
         
     screen.blit(house.image,house.rect)
         
@@ -657,6 +657,9 @@ while not quit:
         screen.blit(menu.image, menu.rect)
 
     money.draw(screen)
+    
+    if not inventory.hidden:
+        inventory.draw(screen)
         
 
     pygame.display.flip()  # Refresh on-screen display
