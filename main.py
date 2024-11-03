@@ -30,19 +30,19 @@ snow_2 = pygame.mixer.Sound("sounds/snow_2.wav")
 kachow = pygame.mixer.Sound("sounds/kachow.mp3")
 
 item_images = dict({
-    "Wheat" : "images/Crops/wheat2.png",
+    "Wheat" : "images/Crops/wheat_icon.png",
     "Pumpkin" : "images/Crops/pum2.png",
     "Carrot" : "images/Crops/harvested_car.png",
     "Watermelon" : "images/Crops/harvested_watermelon.png",
-    "Corn" : "images/Crops/corn2.png",
-    "GMO_Wheat" : "images/Crops/wheat2.png",
+    "Corn" : "images/Crops/corn_icon.png",
+    "GMO_Wheat" : "images/Crops/wheat_icon.png",
     "grass" : "images/grass.png",
     "GMO_Pumpkin" : "images/Crops/pum2.png",
     "GMO_Carrot" : "images/Crops/harvested_car.png",
     "GMO_Watermelon" : "images/Crops/harvested_watermelon.png",
-    "GMO_Corn" : "images/Crops/corn2.png",
-    "Lettuce" : "images/Crops/watermelon2.png",
-    "GMO_Lettuce" : "images/Crops/watermelon2.png",
+    "GMO_Corn" : "images/Crops/corn_icon.png",
+    "Lettuce" : "images/Crops/lettuce2.png",
+    "GMO_Lettuce" : "images/Crops/lettuce2.png",
     "fertilizer" : "images/fertilizer.png",
     "grass" : "images/grass.png"
 })
@@ -160,6 +160,10 @@ class Calendar():
                 if isinstance(tile, GroundTile):
                     if not tile.crop == None:
                         tile.crop.iterate(tile.getRisk(), self.current_month)
+                        if(tile.watered):
+                            tile.crop.quality+=0.01
+                        else:
+                            tile.crop.quality-=0.02
                     tile.iterate()
     
     def display(self, screen):
@@ -775,7 +779,6 @@ def toolsShop():
         planting3_button.changeColor(tools_mouse_pos)
         planting3_button.update(shopMenu.screen)
 
-        #TODO: MAKE SURE MONEY CANNOT GO NEGATIVE!
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -850,6 +853,8 @@ player = Player()
 keys_pressed = []
 
 square_size = 200
+tree_density = 100
+house = House(250,200)
 
 map = [[None for i in range(square_size)] for i in range(square_size)]
 y=-5000
@@ -864,7 +869,7 @@ for i in range(0,square_size):
         x+=50
         for i2 in range(2,square_size-1):
             map[i][i2] = GroundTile(x,y)
-            if random.randint(1,square_size) == 1:
+            if random.randint(1,tree_density) == 1 and pygame.math.Vector2(house.rect.center).distance_to(pygame.math.Vector2((x,y))) >500:
                 map[i][i2].tree=Tree(x,y)
             x+=50
         map[i][square_size-1] = Tile(x=x,y=y,image=images["stone"],image_loaded=True)
@@ -888,8 +893,6 @@ menu = Menu(background_image="images/angry.jpg")
 day_font = pygame.font.Font(None, 48)
 day_writing = day_font.render("Day " + str(day), True, (0,0,0))
 day_rect = day_writing.get_rect(center=(screen_width-100, 50))
-
-house = House(250,200)
 
 money = Money()
 money.money=100
@@ -1150,6 +1153,12 @@ while not quit:
     
     if not inventory.hidden:
         inventory.draw(screen)
+        line_color = (0, 0, 0)  
+
+        start_pos = (50, 0)  
+        end_pos = (50, 74)   
+
+        pygame.draw.line(screen, line_color, start_pos, end_pos, width=2)
         
     if not player.current_tool == None:
         screen.blit(player.current_tool.small_image, player.current_tool.small_rect)
@@ -1157,9 +1166,6 @@ while not quit:
     if should_fade and fade_in.fading:
         screen.blit(fade_in.image,fade_in.rect)
         fade_in.fade()
-        
-        
-        
 
     pygame.display.flip()  # Refresh on-screen display
     delays.append(time.time() - last)
