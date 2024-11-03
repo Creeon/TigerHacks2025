@@ -456,8 +456,8 @@ for i in range(100):
     inventory.add_item("grass")
 inventory.add_item("fertilizer", count=100)
     
-player.tools.append(Hoe(player))
-player.tools.append(GardenFork(player))
+player.tools.append(Tractor(player))
+player.tools.append(FertilizationSpray(player))
 player.tools.append(WaterPlane(player))
 player.tools.append(Shovel(player))
 player.tools.append(Sickle(player))
