@@ -8,6 +8,8 @@ class Tool(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (width, height))
         self.base_image = pygame.image.load(image).convert_alpha()
         self.base_image = pygame.transform.scale(self.image, (width, height))
+        self.small_image = pygame.transform.scale(self.base_image, (50,50))
+        self.small_rect = self.small_image.get_rect(center = (25,675))
         self.rect = self.image.get_rect(center = (0,0))
         self.hidden = True
         self.player = player
@@ -97,4 +99,8 @@ class Sprayer(Tool):
 class FertilizationSpray(Tool):
     def __init__(self, player):
         super().__init__("Spray", "images/spray_bottle.png", 50,50, player, "fertilizing")
+        
+class Hammer(Tool):
+    def __init__(self, player):
+        super().__init__("Hammer", "images/temp_tool.png", 100,100, player, "destroying")
         

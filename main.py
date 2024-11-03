@@ -32,14 +32,14 @@ kachow = pygame.mixer.Sound("sounds/kachow.mp3")
 item_images = dict({
     "Wheat" : "images/Crops/wheat2.png",
     "Pumpkin" : "images/Crops/pum2.png",
-    "Carrot" : "images/Crops/car2.png",
-    "Watermelon" : "images/Crops/watermelon2.png",
+    "Carrot" : "images/Crops/harvested_car.png",
+    "Watermelon" : "images/Crops/harvested_watermelon.png",
     "Corn" : "images/Crops/corn2.png",
     "GMO_Wheat" : "images/Crops/wheat2.png",
     "grass" : "images/grass.png",
     "GMO_Pumpkin" : "images/Crops/pum2.png",
-    "GMO_Carrot" : "images/Crops/car2.png",
-    "GMO_Watermelon" : "images/Crops/watermelon2.png",
+    "GMO_Carrot" : "images/Crops/harvested_car.png",
+    "GMO_Watermelon" : "images/Crops/harvested_watermelon.png",
     "GMO_Corn" : "images/Crops/corn2.png",
     "Lettuce" : "images/Crops/watermelon2.png",
     "GMO_Lettuce" : "images/Crops/watermelon2.png",
@@ -101,6 +101,9 @@ class Inventory():
             self.image.fill((110,110,110))
             self.rect = self.image.get_rect(center=(self.image.get_width()//2+5, 30))
     def update_inventory(self):
+        difference = player.seeds[player.current_seed]["count"] - self.items["seeds"]["count"]
+        if not difference == 0:
+            self.add_item("seeds", count=difference)
         for seed in player.seeds:
             difference = seed["count"] - self.items[seed["name"]]["count"]
             if not difference == 0:
@@ -298,7 +301,6 @@ class Player(pygame.sprite.Sprite):
                     case 1:
                         self.image = self.walking_1[str(self.orientation)]
             self.frame_counter+=1
-            calendar.current_month="Fall"
             if(self.sound_counter==0):
                 match calendar.current_month:
                     case "Spring" | "Summer":
@@ -328,8 +330,36 @@ class Player(pygame.sprite.Sprite):
                             snow_1.play()
             self.sound_counter+=1
 
-        print(self.orientation)
+        #print(self.orientation)
         self.last_orientation = self.orientation
+        
+class FadeIn():
+    def __init__(self):
+        self.time = 30#frames
+        self.current_frame = 0
+        self.image = pygame.Surface((screen_width, screen_height))
+        self.image.fill((0,0,0))
+        self.image.set_alpha(0)
+        self.rect = self.image.get_rect(center=(screen_width//2, screen_height//2))
+        self.fading=False
+    def fade(self):
+        if not self.fading:
+            self.fading=True
+            return False
+        elif(self.current_frame<self.time):
+            self.current_frame+=1
+            if self.current_frame <= int(self.time/2):
+                self.image.set_alpha(int(255 * (self.current_frame/int(self.time/2))))
+            else:
+                self.image.set_alpha(int(255 * ((self.time-self.current_frame)/int(self.time/2))))
+            return False
+        else:
+            self.image.set_alpha(0)
+            self.current_frame=0
+            self.fading=False
+            return True
+        
+
         
 class shopMenu:
     menu_quit = True
@@ -475,6 +505,7 @@ class shopMenu:
 #Function to open and close main shop menu, initialize, etc
 
 def shopMenuShow():
+    screen.fill((6,64,43))  # Fill the display with a solid color
     for row in map:
         for tile in row:
             if not tile == None:
@@ -527,6 +558,7 @@ def seedShop():
     print("Seed shop!")
     
     while (shopMenu.menu_quit == False):
+        screen.fill((6,64,43))  # Fill the display with a solid color
         seed_mouse_pos = pygame.mouse.get_pos()
         for row in map:
             for tile in row:
@@ -603,7 +635,6 @@ def seedShop():
         gmo_pumpkin_button.changeColor(seed_mouse_pos)
         gmo_pumpkin_button.update(shopMenu.screen)
 
-        #TODO: MAKE SURE MONEY CANNOT GO NEGATIVE!
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -674,6 +705,7 @@ def toolsShop():
     print("Tool shop!")
 
     while (shopMenu.menu_quit == False):
+        screen.fill((6,64,43))  # Fill the display with a solid color
         for row in map:
             for tile in row:
                 if not tile == None:
@@ -817,21 +849,25 @@ player = Player()
 #tile2 = Tile(width=100, height=100, x = 220, y=200, color=(0,255,0))
 keys_pressed = []
 
-map = [[None for i in range(200)] for i in range(200)]
-y=0
-for i in range(0,200):
-    x=0
-    if i == 0 or i == 199:
-        for i2 in range(200):
+square_size = 200
+
+map = [[None for i in range(square_size)] for i in range(square_size)]
+y=-5000
+for i in range(0,square_size):
+    x=-5000
+    if i == 0 or i == square_size-1:
+        for i2 in range(square_size):
             map[i][i2] = Tile(x=x,y=y,image=images["stone"],image_loaded=True)
             x+=50
     else:
         map[i][0] = Tile(x=x,y=y,image=images["stone"],image_loaded=True)
         x+=50
-        for i2 in range(2,199):
+        for i2 in range(2,square_size-1):
             map[i][i2] = GroundTile(x,y)
+            if random.randint(1,square_size) == 1:
+                map[i][i2].tree=Tree(x,y)
             x+=50
-        map[i][199] = Tile(x=x,y=y,image=images["stone"],image_loaded=True)
+        map[i][square_size-1] = Tile(x=x,y=y,image=images["stone"],image_loaded=True)
     y+=50
 
 last = time.time()
@@ -844,6 +880,7 @@ player.tools.append(WateringCan(player))
 player.tools.append(Shovel(player))
 player.tools.append(FertilizationSpray(player))
 player.tools.append(Sickle(player))
+player.tools.append(Hammer(player))
 
 
 
@@ -867,6 +904,8 @@ def day_change():
     global player, map, calendar
     calendar.iterate()
 
+should_fade = True
+fade_in = FadeIn()
 
 
 while not quit:
@@ -895,6 +934,7 @@ while not quit:
                 case pygame.K_e:
                     if(checkRange(player.rect,house.rect,house.interact_range)):
                         day_change()
+                        fade_in.fade()
                     elif(calendar.current_month=="Winter" and checkRange(player.rect,christmas_tiger.rect,christmas_tiger.interact_range)):
                         christmas_tiger.interact(money)
                 case pygame.K_1:
@@ -947,6 +987,8 @@ while not quit:
                     })
                 case pygame.K_x:
                     shopMenuShow()
+                case pygame.K_y:
+                    should_fade=not should_fade
         elif event.type == pygame.KEYUP:
             keys_pressed.remove(event.key)
             match event.key:
@@ -965,6 +1007,8 @@ while not quit:
         for tile in row:
             if (not tile == None) and tile.collision:
                 player_speed = checkCollision(player.rect, tile.rect, player_speed)
+            if isinstance(tile, GroundTile) and not tile.tree==None:
+                player_speed = checkCollision(player.rect, tile.tree.collision_rect, player_speed)
             if (not player.current_tool == None) and not player.current_tool.hidden:
                 """if isinstance(tile, CropTile):
                     if tile.rect.colliderect(tool.rect):
@@ -972,7 +1016,7 @@ while not quit:
                 if isinstance(tile, GroundTile):
                     if tile.rect.colliderect(player.current_tool.rect):
                         if player.current_tool.type == "tilling":
-                            if not tile.tilled:
+                            if not tile.tilled and tile.tree==None:
                                 tile.tilled=True
                         elif player.current_tool.type == "watering":
                             if tile.tilled and not tile.watered:
@@ -980,8 +1024,8 @@ while not quit:
                         elif player.current_tool.type == "planting":
                             if tile.tilled and tile.crop==None:
                                 if player.seeds[player.current_seed]["count"] > 0:
-                                    inventory.items["seeds"]["count"]-=1
                                     player.seeds[player.current_seed]["count"]-=1
+                                    inventory.items["seeds"]["count"]=player.seeds[player.current_seed]["count"]
                                     inventory.items["seeds"]["visual_count"] = inventory.font.render(str(inventory.items["seeds"]["count"]), True, (255,255,255))
                                     match player.seeds[player.current_seed]["name"]:
                                         case "Pumpkin":
@@ -1050,11 +1094,15 @@ while not quit:
                                 if money.money > 0:
                                     tile.fertilize()
                                     money.money-=1
+                        elif player.current_tool.type == "destroying":
+                            tile.tree=None
     player_speed=checkCollision(player.rect,house.rect,player_speed)
     for row in map:
         for tile in row:
             if not tile == None:
                 tile.update([-player_speed[0], -player_speed[1]])
+                if isinstance(tile, GroundTile) and not tile.tree==None:
+                    tile.tree.update([-player_speed[0], -player_speed[1]])
         
     house.update([-player_speed[0], -player_speed[1]])   
     christmas_tiger.update([-player_speed[0], -player_speed[1]])    
@@ -1068,11 +1116,13 @@ while not quit:
 
     #tiles.draw(screen)
     #screen.blit(player.image,player.rect)
-    
+    trees = []
     for row in map:
         for tile in row:
             if not tile == None:
                 tile.display(screen)
+                if(isinstance(tile,GroundTile) and not tile.tree == None):
+                    trees.append(tile.tree)
     
         
     screen.blit(house.image,house.rect)
@@ -1081,13 +1131,16 @@ while not quit:
     
     if not player.current_tool == None:
         player.current_tool.update()
-        
-    if calendar.current_month=="Winter":
-        screen.blit(christmas_tiger.image, christmas_tiger.rect)
     
     if (not player.current_tool == None) and not player.current_tool.hidden:
         screen.blit(player.current_tool.image, player.current_tool.rect)
-        
+    
+    for tree in trees:
+        screen.blit(tree.image,tree.rect)
+    
+    if calendar.current_month=="Winter":
+        screen.blit(christmas_tiger.image, christmas_tiger.rect)
+
     calendar.display(screen)
         
     if not menu.hidden:
@@ -1098,11 +1151,19 @@ while not quit:
     if not inventory.hidden:
         inventory.draw(screen)
         
+    if not player.current_tool == None:
+        screen.blit(player.current_tool.small_image, player.current_tool.small_rect)
+        
+    if should_fade and fade_in.fading:
+        screen.blit(fade_in.image,fade_in.rect)
+        fade_in.fade()
+        
+        
         
 
     pygame.display.flip()  # Refresh on-screen display
     delays.append(time.time() - last)
-    #print(1 / (sum(delays) / len(delays)))
+    print(1 / (sum(delays) / len(delays)))
     if len(delays) > 60:
         delays.pop(0)
     last = time.time()

@@ -24,6 +24,7 @@ images = dict({
     "dirt" : pygame.transform.scale(pygame.image.load("images/dirt.png").convert_alpha(), (50,50)),
     "wet_dirt" : pygame.transform.scale(pygame.image.load("images/wet_dirt.png").convert_alpha(), (50,50)),
     "stone" : pygame.transform.scale(pygame.image.load("images/stone.png").convert_alpha(), (50,50)),
+    "tree" : pygame.transform.scale(pygame.image.load("images/tree.png").convert_alpha(), (200,325))
 })
 
 class Tile(pygame.sprite.Sprite):
@@ -202,6 +203,7 @@ class GroundTile(Tile):
         self.shader.fill((0,125,0))
         self.shader.set_alpha(0)
         self.last_crop=None
+        self.tree=None
     def getRisk(self):
         return 30 - self.soil_quality - (5 if self.fertilized else 0) - (15 if self.watered else 0)
     def update(self, movement):
@@ -245,3 +247,22 @@ class ChristmasTiger(InteractableTile):
         super().__init__(300,600,x,y,image="images/Crops/santa_tiger.png", collision=False)
     def interact(self, money):
         money.money+=1
+
+class Tree(Tile):
+    def __init__(self, x=0, y=0):
+        # Use the predefined tree image from images dictionary
+        image = images["tree"]
+        
+        # Initialize the full tree image using Tile
+        super().__init__(width=image.get_width(), height=image.get_height(), x=x-7, y=y-325//2+17, image=image, image_loaded=True)
+        
+        # Set `self.rect` to represent only the base (50x50) for collision
+        # Position it at the bottom center of the tree image
+        self.collision_rect = pygame.rect.Rect(0,0,10,10)
+        self.collision_rect.center = (self.rect.x+7,self.rect.y+self.rect.height//2-13)
+
+    def update(self, movement):
+        # Update the position of the image's main rect
+        super().update(movement)
+        self.collision_rect.center = (self.rect.center[0]+7,self.rect.center[1]+self.rect.height//2-25)
+
