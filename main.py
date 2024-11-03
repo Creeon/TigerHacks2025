@@ -11,7 +11,6 @@ pygame.init()
 print(pygame.display.Info())
 screen_width, screen_height = 1200, 700
 day = 1
-coins = 50
 screen = pygame.display.set_mode((screen_width,screen_height))
 clock = pygame.time.Clock()
 quit = False
@@ -94,24 +93,22 @@ class Player(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(center=(screen_width // 2, screen_height // 2))'''
         
-        
-        
         self.animation_change = 20
         self.walking_1 = dict({
             "0" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/right_walk.png").convert_alpha(), (100,100)),
-            "90" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_back.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/back_idle.png").convert_alpha(), (100,100)),
             "180" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/left_walk.png").convert_alpha(), (100,100)),
             "270" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/for_walk1.png").convert_alpha(), (100,100))
         })
         self.walking_2 = dict({
             "0" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_right.png").convert_alpha(), (100,100)),
-            "90" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_back.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/back_idle.png").convert_alpha(), (100,100)),
             "180" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_left.png").convert_alpha(), (100,100)),
             "270" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/for_walk2.png").convert_alpha(), (100,100))
         })
         self.idle = dict({
             "0" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_right.png").convert_alpha(), (100,100)),
-            "90" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_back.png").convert_alpha(), (100,100)),
+            "90" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/back_idle.png").convert_alpha(), (100,100)),
             "180" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/face_left.png").convert_alpha(), (100,100)),
             "270" : pygame.transform.scale(pygame.image.load("images/CharacterFrames/Idle.png").convert_alpha(), (100,100))
         })
@@ -124,6 +121,8 @@ class Player(pygame.sprite.Sprite):
         self.frame_counter=0
         
         self.walking_type = 0
+
+    coins = 50
         
     def update(self, movement):
         #self.rect = self.rect.move(movement[0], movement[1])
@@ -233,6 +232,28 @@ day_rect = day_writing.get_rect(center=(screen_width-100, 50))
 def get_font(size):
     return pygame.font.Font(None, size)
 
+#Functions to buy seeds
+def buyWheat():
+    player.coins -= 10
+    #TODO: Add 10 wheat seeds to inventory
+    print("COINS: ")
+    print(player.coins)
+def buyGMOWheat():
+    player.coins -= 7
+    #TODO: Add 10 seeds inventory
+    print("COINS: ")
+    print(player.coins)
+def buyPumpkin():
+    player.coins -= 15
+    #TODO: Add 10 seeds to inventory
+    print("COINS: ")
+    print(player.coins)
+def buyGMOPumpkin():
+    player.coins -= 11
+    #TODO: Add 10 seeds to inventory
+    print("COINS: ")
+    print(player.coins)
+
 #Class to store static variable so shop menu can open and close
 class shopMenu:
     menu_quit = True
@@ -243,7 +264,7 @@ class shopMenu:
 
 #Function to open and close main shop menu, initialize, etc
 def shopMenuShow():
-    background = pygame.transform.scale(pygame.image.load("images/angry.jpg").convert_alpha(), (400, 400))
+    background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (400, 400))
     shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
 
     shopMenu.menu_quit = not shopMenu.menu_quit
@@ -255,9 +276,9 @@ def shopMenuShow():
         shop_text_header = get_font(48).render("SHOP", True, (255, 255, 255))
         shop_menu_rect = shop_text_header.get_rect(center = (screen_width // 2,(screen_height - 300)// 2))
 
-        shopMenu.seed_button = Button(image = pygame.image.load("images/CharacterFrames/for_walk1.png"), pos = (screen_width // 2,(screen_height - 120)// 2),
+        shopMenu.seed_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (180, 120)), pos = (screen_width // 2,(screen_height - 120)// 2),
                              text_input = "SEEDS", font = get_font(48), base_color = (0,255,0), hovering_color = (0, 0, 0))
-        shopMenu.tools_button = Button(image = pygame.image.load("images/CharacterFrames/for_walk1.png"), pos = (screen_width // 2,(screen_height + 200)// 2),
+        shopMenu.tools_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (180, 120)), pos = (screen_width // 2,(screen_height + 200)// 2),
                               text_input = "TOOLS", font = get_font(48), base_color = (0, 0, 255), hovering_color = (0, 0, 0))
         
         shopMenu.screen.blit(shop_text_header, shop_menu_rect)
@@ -284,10 +305,6 @@ def shopMenuShow():
 
         pygame.display.update()
 
-    #If quit is true, then the menu must already be open -- so close it!
-    print("Close shop menu!")
-    shopMenu.menu_quit = True
-
 #Function to open seed window in shop
 def seedShop():
     print("Seed shop!")
@@ -295,25 +312,24 @@ def seedShop():
     while (shopMenu.menu_quit == False):
         seed_mouse_pos = pygame.mouse.get_pos()
 
-        background = pygame.transform.scale(pygame.image.load("images/pumpkin.png").convert_alpha(), (400, 400))
+        background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (400, 400))
         shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
 
-        seed_text = get_font(48).render("SEED SCREEN", True, (0, 30, 0))
-        seed_rect = seed_text.get_rect(center = (screen_width // 2, (screen_height // 2) - 300))
+        seed_text = get_font(48).render("SEED SHOP", True, (0, 30, 0))
+        seed_rect = seed_text.get_rect(center = (screen_width // 2, (screen_height // 2) - 140))
         shopMenu.screen.blit(seed_text, seed_rect)
 
         #initialize buttons
-        seed_back = Button(image = None, pos = (screen_width // 2, (screen_height + 100)),
-                           text_input = "BACK", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        wheat_button = Button(image = None, pos = ((screen_width // 2) - 50, (screen_height // 2) - 50),
+        seed_back = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button1.png"), (100, 70)), pos = (screen_width // 2, (screen_height // 2) + 100),
+                           text_input = "BACK", font = get_font(20), base_color = (255, 255, 255), hovering_color = (100,200))
+        wheat_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 70)), pos = ((screen_width // 2) - 50, (screen_height // 2) - 50),
                            text_input = "WHEAT", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        gmo_wheat_button = Button(image = None, pos = ((screen_width // 2) + 50, (screen_height // 2) - 50),
+        gmo_wheat_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 70)), pos = ((screen_width // 2) + 50, (screen_height // 2) - 50),
                            text_input = "GMO WHEAT", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        pumpkin_button = Button(image = None, pos = ((screen_width // 2) - 50, (screen_height // 2) + 50),
+        pumpkin_button = Button(image =pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 70)), pos = ((screen_width // 2) - 50, (screen_height // 2) + 50),
                            text_input = "PUMPKIN", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-        gmo_pumpkin_button = Button(image = None, pos = ((screen_width // 2) + 50, (screen_height // 2) + 50),
+        gmo_pumpkin_button = Button(image = pygame.transform.scale(pygame.image.load("images/MenuSprites/button2.png"), (100, 70)), pos = ((screen_width // 2) + 50, (screen_height // 2) + 50),
                            text_input = "GMO PUMPKIN", font = get_font(20), base_color = (255, 255, 255), hovering_color = (0, 0, 0))
-
 
         #Display Buttons
         seed_back.changeColor(seed_mouse_pos)
@@ -341,6 +357,19 @@ def seedShop():
                     print("BACK SEEDS!")
                     shopMenu.menu_quit = not shopMenu.menu_quit
                     shopMenuShow()
+                if wheat_button.checkForInput(pygame.mouse.get_pos()):
+                    print("WHEAT!")
+                    buyWheat()
+                if gmo_wheat_button.checkForInput(pygame.mouse.get_pos()):
+                    print("GMO WHEAT!")
+                    buyGMOWheat()
+                if pumpkin_button.checkForInput(pygame.mouse.get_pos()):
+                    print("PUMPKIN!")
+                    buyPumpkin()
+                if gmo_pumpkin_button.checkForInput(pygame.mouse.get_pos()):
+                    print("GMO PUMPKIN!")
+                    buyGMOPumpkin()
+
 
     
 
@@ -354,7 +383,7 @@ def toolsShop():
     while (shopMenu.menu_quit == False):
         tools_mouse_pos = pygame.mouse.get_pos()
 
-        background = pygame.transform.scale(pygame.image.load("images/dirt.png").convert_alpha(), (400, 400))
+        background = pygame.transform.scale(pygame.image.load("images/MenuSprites/menu1.png").convert_alpha(), (400, 400))
         shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
 
         tools_text = get_font(48).render("TOOLS SCREEN", True, (0, 0, 30))
