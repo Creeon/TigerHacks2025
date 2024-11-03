@@ -140,7 +140,7 @@ class Player(pygame.sprite.Sprite):
                 "name" : "Pumpkin",
                 "count" : 100
             }),
-                        dict({
+            dict({
                 "name" : "Watermelon",
                 "count" : 100
             }),
