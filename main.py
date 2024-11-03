@@ -274,11 +274,11 @@ def shopMenuShow():
                 keys_pressed.remove(event.key)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if shopMenu.seed_button.checkForInput(pygame.mouse.get_pos()):
-                    #Do something
-                    pass
-                if shopMenu.seed_button.checkForInput(pygame.mouse.get_pos()):
-                    #Do something
-                    pass
+                    print("SEEDS!")
+                    seedShop()
+                if shopMenu.tools_button.checkForInput(pygame.mouse.get_pos()):
+                    print("TOOLS!")
+                    toolsShop()
                 
 
         pygame.display.update()
@@ -291,10 +291,11 @@ def shopMenuShow():
 def seedShop():
     print("Seed shop!")
     
-    while True:
+    while (shopMenu.menu_quit == False):
         seed_mouse_pos = pygame.mouse.get_pos()
 
-        shopMenu.screen.fill((117, 94, 74))
+        background = pygame.transform.scale(pygame.image.load("images/pumpkin.png").convert_alpha(), (400, 400))
+        shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
 
         seed_text = get_font(48).render("SEED SCREEN", True, (0, 30, 0))
         seed_rect = seed_text.get_rect(center = (screen_width // 2, (screen_height - 200)// 2))
@@ -307,9 +308,21 @@ def seedShop():
         seed_back.update(shopMenu.screen)
 
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if seed_back.checkForInput(seed_mouse_pos):
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                keys_pressed.append(event.key)
+                if event.key == pygame.K_x:
+                    shopMenu.menu_quit=True
+            elif event.type == pygame.KEYUP:
+                keys_pressed.remove(event.key)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if seed_back.checkForInput(pygame.mouse.get_pos()):
+                    print("BACK SEEDS!")
+                    shopMenu.menu_quit = not shopMenu.menu_quit
                     shopMenuShow()
+
+    
 
         pygame.display.update()
 
@@ -318,10 +331,11 @@ def seedShop():
 def toolsShop():
     print("Tool shop!")
 
-    while True:
+    while (shopMenu.menu_quit == False):
         tools_mouse_pos = pygame.mouse.get_pos()
 
-        shopMenu.screen.fill((117, 94, 74))
+        background = pygame.transform.scale(pygame.image.load("images/dirt.png").convert_alpha(), (400, 400))
+        shopMenu.screen.blit(background, background.get_rect(center=(screen_width//2, screen_height//2)))
 
         tools_text = get_font(48).render("TOOLS SCREEN", True, (0, 0, 30))
         tools_rect = tools_text.get_rect(center = (screen_width // 2, (screen_height - 200)// 2))
@@ -334,8 +348,18 @@ def toolsShop():
         tools_back.update(shopMenu.screen)
 
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if tools_back.checkForInput(tools_mouse_pos):
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                keys_pressed.append(event.key)
+                if event.key == pygame.K_x:
+                    shopMenu.menu_quit=True
+            elif event.type == pygame.KEYUP:
+                keys_pressed.remove(event.key)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if tools_back.checkForInput(pygame.mouse.get_pos()):
+                    print("BACK SEEDS!")
+                    shopMenu.menu_quit = not shopMenu.menu_quit
                     shopMenuShow()
 
         pygame.display.update()
