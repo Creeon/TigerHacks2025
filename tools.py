@@ -39,10 +39,12 @@ class WateringCan(Tool):
 class Hose(Tool):
     def __init__(self, player):
         super().__init__("Hose", "images/hose.png", 150,150, player,"watering") 
+        self.speed_mod=1.5
     
 class WaterPlane(Tool):    
     def __init__(self, player):
         super().__init__("Water Plane", "images/water_plane.png", 400, 400, player, "watering")
+        self.speed_mod = 3
         
 class Tractor(Tool):    
     def __init__(self, player):
@@ -64,11 +66,12 @@ class Shovel(Tool):
         
 class Plow(Tool):
     def __init__(self, player):
-        super().__init__("Shovel", "plow/shovel.png", 150, 80, player, "planting")
+        super().__init__("Shovel", "images/shovel.png", 150, 80, player, "planting")
         
 class Ox(Tool):
     def __init__(self, player):
-        super().__init__("Ox", "plow/Ox.jpg", 300, 150, player, "planting")
+        super().__init__("Ox", "images/Ox.png", 300, 150, player, "planting")
+        self.speed_mod=2.5
         
 class Sickle(Tool):
     def __init__(self, player):
@@ -80,11 +83,12 @@ class Scythe(Tool):
         
 class Combine(Tool):
     def __init__(self, player):
-        super().__init__("Combine", "images/Combine.png", 400, 200, player, "harvesting")
+        super().__init__("Combine", "images/Combine.png", 400, 400, player, "harvesting")
+        self.speed_mod=3
         
 class FertilizingMachine(Tool):
     def __init__(self,player):
-        super().__init__("Machine", "images/machine.png", 500,500,player,"fertilizing")
+        super().__init__("Machine", "images/machine.png", 400,400,player,"fertilizing")
         
 class Sprayer(Tool):
     def __init__(self, player):
@@ -93,3 +97,4 @@ class Sprayer(Tool):
 class FertilizationSpray(Tool):
     def __init__(self, player):
         super().__init__("Spray", "images/spray_bottle.png", 50,50, player, "fertilizing")
+        
