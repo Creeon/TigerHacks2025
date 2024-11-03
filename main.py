@@ -54,6 +54,13 @@ grass_images = dict({
     "Winter" : pygame.transform.scale(pygame.image.load("images/HomeGrown/grass_tile_winter.png").convert_alpha(), (50,50))
 })
 
+tree_images = dict({
+    "Spring" : pygame.transform.scale(pygame.image.load("images/tree.png").convert_alpha(), (200,325)),
+    "Summer" : pygame.transform.scale(pygame.image.load("images/tree.png").convert_alpha(), (200,325)),
+    "Fall" : pygame.transform.scale(pygame.image.load("images/fall_tree.png").convert_alpha(), (200,325)),
+    "Winter" : pygame.transform.scale(pygame.image.load("images/tree.png").convert_alpha(), (200,325))
+})
+
 
 def get_font(size):
     return pygame.font.Font(None, size)
@@ -153,6 +160,8 @@ class Calendar():
                 for tile in row:
                     if isinstance(tile, GroundTile):
                         tile.default_image = grass_images[self.current_month]
+                        if not tile.tree==None:
+                            tile.tree.image = tree_images[self.current_month]
         self.writing = self.font.render(self.current_month + " " + str(self.current_day), True, (0,0,0))
         self.rect = self.writing.get_rect(center=(screen_width-100, 50))
         for row in map:
