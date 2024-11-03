@@ -12,3 +12,4 @@ class Menu(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (1200//2, 700//2))
         self.hidden = True
         
+        

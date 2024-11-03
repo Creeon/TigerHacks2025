@@ -7,7 +7,11 @@ images = dict({
     "dead_pumpkin" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (50,50)),
     "baby_wheat" : pygame.transform.scale(pygame.image.load("images/best_wheat.png").convert_alpha(), (50,50)),
     "grown_wheat" : pygame.transform.scale(pygame.image.load("images/wheat.png").convert_alpha(), (50,50)),
-    "dead_wheat" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (50,50))
+    "dead_wheat" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (50,50)),
+    "grass" : pygame.transform.scale(pygame.image.load("images/grass.png").convert_alpha(), (50,50)),
+    "dirt" : pygame.transform.scale(pygame.image.load("images/dirt.png").convert_alpha(), (50,50)),
+    "wet_dirt" : pygame.transform.scale(pygame.image.load("images/wet_dirt.png").convert_alpha(), (50,50)),
+    "stone" : pygame.transform.scale(pygame.image.load("images/stone.png").convert_alpha(), (50,50)),
 })
 
 class Tile(pygame.sprite.Sprite):
@@ -31,6 +35,9 @@ class Tile(pygame.sprite.Sprite):
     def change_image(self, image, width, height):
         self.image = pygame.image.load(image).convert_alpha()
         self.image = pygame.transform.scale(self.image, (width,height))
+        
+    def display(self, screen):
+        screen.blit(self.image, self.rect)
         
 class InteractableTile(Tile):
     def __init__(
@@ -86,9 +93,9 @@ class CropTile(InteractableTile):
         if self.grown or self.dead:
             self.kill()
         
-    def iterate(self):
+    def iterate(self, risk):
         self.age+=1
-        if random.randint(0,100) < self.risk:
+        if random.randint(0,100) < self.risk+risk:
             self.die()
         elif self.age == self.grow_time and not self.dead:
             self.grow()
@@ -107,7 +114,7 @@ class WheatTile(CropTile):
         x = 0,
         y = 0,
     ):
-        super().__init__("Wheat", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_wheat"], dead_image=images["dead_wheat"], grown_image=images["grown_wheat"], interact_range=100, risk=0.1)
+        super().__init__("Wheat", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_wheat"], dead_image=images["dead_wheat"], grown_image=images["grown_wheat"], interact_range=100, risk=3)
         
 class PumpkinTile(CropTile):
     def __init__(
@@ -115,7 +122,7 @@ class PumpkinTile(CropTile):
         x = 0,
         y = 0,
     ):
-        super().__init__("Pumpkin", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_pumpkin"], dead_image=images["dead_pumpkin"], grown_image=images["grown_pumpkin"], interact_range=100, risk=10)
+        super().__init__("Pumpkin", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_pumpkin"], dead_image=images["dead_pumpkin"], grown_image=images["grown_pumpkin"], interact_range=100, risk=3)
 
         
 class Gate(InteractableTile):
@@ -129,4 +136,53 @@ class Gate(InteractableTile):
             self.image.fill((0,0,0))
         else:
             self.image.fill((0,125,0))
-        
+            
+class GroundTile(Tile):
+    def __init__(self,x:int,y:int,default_image="grass",tilled_image="dirt",watered_image="wet_dirt",collision=False):
+        self.default_image = images[default_image]
+        self.tilled_image = images[tilled_image]
+        self.watered_image = images[watered_image]
+        super().__init__(width=50,height=50,x=x,y=y,collision=collision,image=self.default_image,image_loaded=True)
+        self.crop = None
+        self.soil_quality=10
+        self.fertilized = False
+        self.watered = False
+        self.tilled = False
+        self.shader = pygame.Surface((50,50))
+        self.shader.fill((0,125,0))
+        self.shader.set_alpha(0)
+    def getRisk(self):
+        return 30 - self.soil_quality - (5 if self.fertilized else 0) - (15 if self.watered else 0)
+    def update(self, movement):
+        if not self.tilled:
+            self.image = self.default_image
+        else:
+            if self.watered:
+                self.image = self.watered_image
+            else:
+                self.image = self.tilled_image
+        self.rect = self.rect.move(movement[0], movement[1])
+        if not self.crop == None:
+            self.crop.rect = self.crop.rect.move(movement[0], movement[1])
+    def iterate(self):
+        if self.watered and (random.randint(1,100) < 21):
+            self.watered=False
+        if self.crop == None and self.tilled:
+            if random.randint(1,100) < 15:
+                self.tilled=False
+        if self.fertilized:
+            if random.randint(1,100) <=5:
+                self.fertilized=False
+    def fertilize(self):
+        self.fertilized = True
+        self.shader.set_alpha(35)
+    def display(self, screen):
+        screen.blit(self.image, self.rect)
+        if not self.crop == None:
+            screen.blit(self.crop.image, self.crop.rect)
+        if self.fertilized:
+            screen.blit(self.shader, self.shader.get_rect(center=self.rect.center))
+            
+class House(InteractableTile):
+    def __init__(self,x,y):
+        super().__init__(500,500,x,y,image="images/house.png")
