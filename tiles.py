@@ -2,12 +2,12 @@ import pygame
 import random
 
 images = dict({
-    "baby_pumpkin" : pygame.transform.scale(pygame.image.load("images/pumpkin_sprout.png").convert_alpha(), (50,50)),
-    "grown_pumpkin" : pygame.transform.scale(pygame.image.load("images/pumpkin.png").convert_alpha(), (50,50)),
-    "dead_pumpkin" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (50,50)),
-    "baby_wheat" : pygame.transform.scale(pygame.image.load("images/best_wheat.png").convert_alpha(), (50,50)),
-    "grown_wheat" : pygame.transform.scale(pygame.image.load("images/wheat.png").convert_alpha(), (50,50)),
-    "dead_wheat" : pygame.transform.scale(pygame.image.load("images/dead_bush.png").convert_alpha(), (50,50)),
+    "baby_pumpkin" : pygame.transform.scale(pygame.image.load("images/Crops/pum1.png").convert_alpha(), (50,50)),
+    "grown_pumpkin" : pygame.transform.scale(pygame.image.load("images/Crops/pum2.png").convert_alpha(), (50,50)),
+    "dead_pumpkin" : pygame.transform.scale(pygame.image.load("images/Crops/pum3.png").convert_alpha(), (50,50)),
+    "baby_wheat" : pygame.transform.scale(pygame.image.load("images/Crops/wheat1.png").convert_alpha(), (50,50)),
+    "grown_wheat" : pygame.transform.scale(pygame.image.load("images/Crops/wheat2.png").convert_alpha(), (50,50)),
+    "dead_wheat" : pygame.transform.scale(pygame.image.load("images/Crops/wheat3.png").convert_alpha(), (50,50)),
     "grass" : pygame.transform.scale(pygame.image.load("images/grass.png").convert_alpha(), (50,50)),
     "dirt" : pygame.transform.scale(pygame.image.load("images/dirt.png").convert_alpha(), (50,50)),
     "wet_dirt" : pygame.transform.scale(pygame.image.load("images/wet_dirt.png").convert_alpha(), (50,50)),
