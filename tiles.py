@@ -19,7 +19,7 @@ images = dict({
     "dead_corn" : pygame.transform.scale(pygame.image.load("images/Crops/corn3.png").convert_alpha(), (50,50)),
     "baby_lettuce" : pygame.transform.scale(pygame.image.load("images/Crops/lettuce1.png").convert_alpha(), (50,50)),
     "grown_lettuce" : pygame.transform.scale(pygame.image.load("images/Crops/lettuce2.png").convert_alpha(), (50,50)),
-    "dead_lettuce" : pygame.transform.scale(pygame.image.load("images/Crops/dead_bush.png").convert_alpha(), (50,50)),
+    "dead_lettuce" : pygame.transform.scale(pygame.image.load("images/Crops/lettuce3.png").convert_alpha(), (50,50)),
     "grass" : pygame.transform.scale(pygame.image.load("images/grass.png").convert_alpha(), (50,50)),
     "dirt" : pygame.transform.scale(pygame.image.load("images/dirt.png").convert_alpha(), (50,50)),
     "wet_dirt" : pygame.transform.scale(pygame.image.load("images/wet_dirt.png").convert_alpha(), (50,50)),
