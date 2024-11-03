@@ -29,11 +29,11 @@ item_images = dict({
     "Watermelon" : "images/Crops/watermelon2.png"
 })
 
-tiles = dict({
-    "Spring" : None,
-    "Summer" : None,
-    "Fall" : None,
-    "Winter" : None
+grass_images = dict({
+    "Spring" : pygame.transform.scale(pygame.image.load("images/HomeGrown/grass_tile_spring.png").convert_alpha(), (50,50)),
+    "Summer" : pygame.transform.scale(pygame.image.load("images/HomeGrown/grass_tile_summer.png").convert_alpha(), (50,50)),
+    "Fall" : pygame.transform.scale(pygame.image.load("images/HomeGrown/grass_tile_fall.png").convert_alpha(), (50,50)),
+    "Winter" : pygame.transform.scale(pygame.image.load("images/HomeGrown/grass_tile_winter.png").convert_alpha(), (50,50))
 })
 
 
@@ -123,14 +123,18 @@ class Calendar():
             if self.current_index>=len(self.months):
                 self.current_index=0
             self.current_month=self.months[self.current_index]
-            match self.current_month:
-                case "Spring":
-                    for row in map:
-                        for tile in row:
-                            if isinstance(tile, GroundTile):
-                                pass
+            for row in map:
+                for tile in row:
+                    if isinstance(tile, GroundTile):
+                        tile.default_image = grass_images[self.current_month]
         self.writing = self.font.render(self.current_month + " " + str(self.current_day), True, (0,0,0))
         self.rect = self.writing.get_rect(center=(screen_width-100, 50))
+        for row in map:
+            for tile in row:
+                if isinstance(tile, GroundTile):
+                    if not tile.crop == None:
+                        tile.crop.iterate(tile.getRisk(), self.current_month)
+                    tile.iterate()
     
     def display(self, screen):
         screen.blit(self.writing,self.rect)
@@ -501,12 +505,6 @@ calendar = Calendar()
 def day_change():
     global player, map, calendar
     calendar.iterate()
-    for row in map:
-        for tile in row:
-            if isinstance(tile, GroundTile):
-                if not tile.crop == None:
-                    tile.crop.iterate(tile.getRisk())
-                tile.iterate()
 
 
 

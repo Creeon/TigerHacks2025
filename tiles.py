@@ -14,7 +14,7 @@ images = dict({
     "baby_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelon1.png").convert_alpha(), (50,50)),
     "grown_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelon2.png").convert_alpha(), (50,50)),
     "dead_watermelon" : pygame.transform.scale(pygame.image.load("images/Crops/watermelono3.png").convert_alpha(), (50,50)),
-    "grass" : pygame.transform.scale(pygame.image.load("images/grass.png").convert_alpha(), (50,50)),
+    "grass" : pygame.transform.scale(pygame.image.load("images/HomeGrown/grass_tile_spring.png").convert_alpha(), (50,50)),
     "dirt" : pygame.transform.scale(pygame.image.load("images/dirt.png").convert_alpha(), (50,50)),
     "wet_dirt" : pygame.transform.scale(pygame.image.load("images/wet_dirt.png").convert_alpha(), (50,50)),
     "stone" : pygame.transform.scale(pygame.image.load("images/stone.png").convert_alpha(), (50,50)),
@@ -82,7 +82,8 @@ class CropTile(InteractableTile):
         interact_range = 50,
         risk = 0,
         cost=10,
-        quality=1
+        quality=1,
+        season="Spring"
     ):
         super().__init__(width=width, height=height, x=x, y=y, color=color, collision=collision, image=image, interact_range=interact_range, image_loaded=True)
         self.crop_name = crop_name
@@ -96,6 +97,7 @@ class CropTile(InteractableTile):
         self.age = 0
         self.cost=cost
         self.quality=quality
+        self.season=season
 
     def interact(self, money):
         if self.grown:
@@ -104,9 +106,9 @@ class CropTile(InteractableTile):
         if self.grown or self.dead:
             self.kill()
         
-    def iterate(self, risk):
+    def iterate(self, risk, season):
         self.age+=1
-        if random.randint(0,100) < self.risk+risk:
+        if random.randint(0,100) < self.risk+risk+(0 if season==self.season else 50):
             self.die()
         elif self.age == self.grow_time and not self.dead:
             self.grow()
@@ -125,7 +127,7 @@ class WheatTile(CropTile):
         x = 0,
         y = 0,
     ):
-        super().__init__("Wheat", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_wheat"], dead_image=images["dead_wheat"], grown_image=images["grown_wheat"], interact_range=100, risk=3)
+        super().__init__("Wheat", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_wheat"], dead_image=images["dead_wheat"], grown_image=images["grown_wheat"], interact_range=100, risk=3, season="Fall")
         
 class PumpkinTile(CropTile):
     def __init__(
@@ -133,7 +135,7 @@ class PumpkinTile(CropTile):
         x = 0,
         y = 0,
     ):
-        super().__init__("Pumpkin", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_pumpkin"], dead_image=images["dead_pumpkin"], grown_image=images["grown_pumpkin"], interact_range=100, risk=3)
+        super().__init__("Pumpkin", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_pumpkin"], dead_image=images["dead_pumpkin"], grown_image=images["grown_pumpkin"], interact_range=100, risk=3, season="Fall")
 
 class CarrotTile(CropTile):
     def __init__(
@@ -141,7 +143,7 @@ class CarrotTile(CropTile):
         x = 0,
         y = 0,
     ):
-        super().__init__("Carrot", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_carrot"], dead_image=images["dead_carrot"], grown_image=images["grown_carrot"], interact_range=100, risk=3)
+        super().__init__("Carrot", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_carrot"], dead_image=images["dead_carrot"], grown_image=images["grown_carrot"], interact_range=100, risk=3, season="Spring")
         
 class WatermelonTile(CropTile):
     def __init__(
@@ -149,7 +151,7 @@ class WatermelonTile(CropTile):
         x = 0,
         y = 0,
     ):
-        super().__init__("Watermelon", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_watermelon"], dead_image=images["dead_watermelon"], grown_image=images["grown_watermelon"], interact_range=100, risk=3)
+        super().__init__("Watermelon", 10, 10, width=50, height=50, x=x, y=y, collision=False, image=images["baby_watermelon"], dead_image=images["dead_watermelon"], grown_image=images["grown_watermelon"], interact_range=100, risk=3, season="Summer")
         
 class Gate(InteractableTile):
     def __init__(self,x:int,y:int,rot:int):
